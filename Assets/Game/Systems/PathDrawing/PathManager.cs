@@ -28,11 +28,13 @@ public class PathManager : MonoBehaviour
             selectedTiles.Clear();
             levelManager.ResetTiles();
 
-            foreach (Transform arrow in counters)
+            foreach (Transform counter in counters)
             {
-                Destroy(arrow.gameObject);
+                Destroy(counter.gameObject);
             }
             counters.Clear();
+
+            Events.Level.Reset();
         }
     }
 
@@ -43,38 +45,42 @@ public class PathManager : MonoBehaviour
 
         if (selectedTiles.Count == 0)
         {
-            selectedTiles.Add(_tilePos);
-            levelManager.ChangeTileToSelected(_tilePos);
-            SpawnCounter(_tilePos);
+            CheckForNeighboringTiles(_tilePos, levelManager.playerStartTilePos);
         }
         else
         {
-            //check if selected tile is neighboring to last tile in the list
-            foreach (Vector3Int direction in neighboringTileDirections)
-            {
-                Vector3Int neighborTile = selectedTiles[^1] + direction;
-
-                if (_tilePos == neighborTile)
-                {
-                    selectedTiles.Add(neighborTile);
-                    levelManager.ChangeTileToSelected(_tilePos);
-
-                    SpawnCounter(neighborTile);
-                    break;
-                }
-            }
+            CheckForNeighboringTiles(_tilePos, selectedTiles[^1]);
         }
     }
 
+    void CheckForNeighboringTiles(Vector3Int _tilePos, Vector3Int _point)
+    {
+        foreach (Vector3Int direction in neighboringTileDirections)
+        {
+            Vector3Int neighborTile = _point + direction;
+            if (_tilePos == neighborTile)
+            {
+                selectedTiles.Add(_tilePos);
+                levelManager.ChangeTileToSelected(_tilePos);
+                SpawnCounter(_tilePos);
+                break;
+            }
+        }
+    }
     void SpawnCounter(Vector3Int tilePos)
     {
         Vector3 worldPos = levelManager.GetWorldTilemap().CellToWorld(tilePos);
         worldPos += Vector3.one * 0.5f;
         worldPos.z *= -1;
-        Transform counterInstance = Instantiate(counterPrefab, worldPos, Quaternion.identity);
+        Transform counterInstance = Instantiate(counterPrefab, worldPos, Quaternion.identity, levelManager.transform);
         counters.Add(counterInstance);
 
         TMP_Text counterText = counterInstance.GetComponentInChildren<TMP_Text>();
         counterText.text = selectedTiles.Count.ToString();
+    }
+
+    public List<Vector3Int> GetPath()
+    {
+        return selectedTiles;
     }
 }

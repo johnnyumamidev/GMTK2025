@@ -13,7 +13,7 @@ public class TileSelector : MonoBehaviour
         Vector2 mousePosToWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         transform.position = mousePosToWorld;
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
             Vector3Int mouseToTilemapPos = levelManager.GetWorldTilemap().WorldToCell(mousePosToWorld);
             pathManager?.AddTile(mouseToTilemapPos);
