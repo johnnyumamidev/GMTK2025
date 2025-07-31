@@ -11,7 +11,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Boundary
   - 
   - 
   - 
@@ -40,6 +40,12 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Ground
+    uniqueID: 888612543
+    locked: 0
+  - name: Entities
+    uniqueID: 2929246699
     locked: 0
   - name: Fog
     uniqueID: 1901960839

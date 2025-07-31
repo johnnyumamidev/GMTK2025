@@ -10,18 +10,33 @@ public class LevelManager : MonoBehaviour
     [SerializeField] TileBase tentTile;
     [SerializeField] Tilemap worldTilemap;
     [SerializeField] Tilemap fogTilemap;
+    [SerializeField] Tilemap pathTilemap;
 
     [SerializeField] int levelWidth, levelHeight;
     [SerializeField] Transform levelGenerationStartPoint;
+    Vector3Int levelGenStartTilePos;
+    Vector3Int playerStartTilePos;
     [SerializeField] List<Vector3Int> playableTiles = new();
 
     [SerializeField] Transform player;
-    public Vector3Int playerStartTilePos;
+    [SerializeField] Transform cameraMoveBoundary;
 
     public static LevelManager instance;
     void Awake()
     {
         instance = this;
+    }
+    void OnEnable()
+    {
+        Events.Level.StartLoop += SetPathTilemapToGroundLayer;
+        Events.Level.LoopComplete += SetPathTilemapToFogLayer;
+
+        Events.Level.LoopComplete += ResetTiles;
+    } 
+    void OnDisable()
+    {
+        Events.Level.StartLoop -= SetPathTilemapToGroundLayer;
+        Events.Level.LoopComplete -= SetPathTilemapToFogLayer;
     }
     void Start()
     {
@@ -31,12 +46,12 @@ public class LevelManager : MonoBehaviour
 
     void GenerateLevel()
     {
-        Vector3Int startPosition = worldTilemap.WorldToCell(levelGenerationStartPoint.position);
+        levelGenStartTilePos = worldTilemap.WorldToCell(levelGenerationStartPoint.position);
         for (int x = 0; x < levelWidth; x++)
         {
             for (int y = 0; y < levelHeight; y++)
             {
-                Vector3Int currentTile = startPosition + new Vector3Int(x, y, 0);
+                Vector3Int currentTile = levelGenStartTilePos + new Vector3Int(x, y, 0);
                 worldTilemap.SetTile(currentTile, baseTile);
                 fogTilemap.SetTile(currentTile, baseTile);
 
@@ -44,20 +59,18 @@ public class LevelManager : MonoBehaviour
             }
         }
 
-        // get random tile from grid
-        int random = Random.Range(0, playableTiles.Count - 1);
-        playerStartTilePos = playableTiles[random];
+        // get the middle tile of the entire map
+        Vector3Int centerTile = new Vector3Int(Mathf.CeilToInt(levelWidth / 2 - 1), Mathf.CeilToInt(levelHeight / 2 - 1), 0);
+        player.position = worldTilemap.CellToWorld(centerTile) + (Vector3.one * 0.5f);
+        playerStartTilePos = centerTile;
 
-        // place player at that randomly selected tile
-        Vector3 playerStartPos = worldTilemap.CellToWorld(playerStartTilePos);
-        playerStartPos += Vector3.one * 0.5f;
-        player.position = playerStartPos;
+        //configure the camera movement boundary
+        int boundaryBorderSpacing = 5;
+        cameraMoveBoundary.position = player.position;
+        cameraMoveBoundary.localScale = new Vector3(levelWidth - boundaryBorderSpacing, levelHeight - boundaryBorderSpacing, 0);
 
         // set start pos tile to tent sprite
         worldTilemap.SetTile(playerStartTilePos, tentTile);
-
-        // remove starting position from list of available spawn points
-        playableTiles.RemoveAt(random);
 
         // invoke event to start spawning other units
         Events.Level.GridGenerated?.Invoke();
@@ -68,7 +81,10 @@ public class LevelManager : MonoBehaviour
     {
         return playableTiles;
     }
-
+    public Vector3Int GetStartingTilePos()
+    {
+        return playerStartTilePos;
+    }
     public Tilemap GetWorldTilemap()
     {
         return worldTilemap;
@@ -78,12 +94,12 @@ public class LevelManager : MonoBehaviour
         return fogTilemap;
     }
     #endregion
-    
+
     public void ChangeTileToSelected(Vector3Int selectedTilePos)
     {
         if (worldTilemap.HasTile(selectedTilePos))
         {
-            worldTilemap.SetTile(selectedTilePos, selectedTile);
+            pathTilemap.SetTile(selectedTilePos, selectedTile);
         }
     }
 
@@ -91,7 +107,18 @@ public class LevelManager : MonoBehaviour
     {
         foreach (Vector3Int tilePos in playableTiles)
         {
-            worldTilemap.SetTile(tilePos, baseTile);
+            pathTilemap.SetTile(tilePos, null);
         }
+    }
+
+    void SetPathTilemapToGroundLayer()
+    {
+        // show path below fog
+        pathTilemap.GetComponent<TilemapRenderer>().sortingLayerName = "Ground";
+    }
+    void SetPathTilemapToFogLayer()
+    {
+        // show path above fog
+        pathTilemap.GetComponent<TilemapRenderer>().sortingLayerName = "Fog";
     }
 }

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2544815938100191330}
   m_Layer: 0
-  m_Name: Counter
+  m_Name: PathCounter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 7704390417414604128}
   - component: {fileID: 7322606709478322627}
   - component: {fileID: 6156564098822081894}
+  - component: {fileID: 4506533975620068193}
   m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -108,9 +109,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: 888612543
+  m_SortingLayer: 1
+  m_SortingOrder: 1
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &6156564098822081894
 MonoBehaviour:
@@ -204,3 +205,15 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 7322606709478322627}
   m_maskType: 0
+--- !u!114 &4506533975620068193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2788694966138653546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29c19642d12982b4aafea3aa7df1c05a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

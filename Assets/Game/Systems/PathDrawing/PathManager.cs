@@ -19,6 +19,12 @@ public class PathManager : MonoBehaviour
     void OnEnable()
     {
         levelManager = FindObjectOfType<LevelManager>();
+
+        Events.Level.LoopComplete += ClearCounters;
+    }
+    void OnDisable()
+    {
+        Events.Level.LoopComplete -= ClearCounters;
     }
     void Update()
     {
@@ -28,13 +34,9 @@ public class PathManager : MonoBehaviour
             selectedTiles.Clear();
             levelManager.ResetTiles();
 
-            foreach (Transform counter in counters)
-            {
-                Destroy(counter.gameObject);
-            }
-            counters.Clear();
+            ClearCounters();
 
-            Events.Level.Reset();
+            Events.Level.Reset?.Invoke();
         }
     }
 
@@ -45,7 +47,7 @@ public class PathManager : MonoBehaviour
 
         if (selectedTiles.Count == 0)
         {
-            CheckForNeighboringTiles(_tilePos, levelManager.playerStartTilePos);
+            CheckForNeighboringTiles(_tilePos, levelManager.GetStartingTilePos());
         }
         else
         {
@@ -75,12 +77,21 @@ public class PathManager : MonoBehaviour
         Transform counterInstance = Instantiate(counterPrefab, worldPos, Quaternion.identity, levelManager.transform);
         counters.Add(counterInstance);
 
-        TMP_Text counterText = counterInstance.GetComponentInChildren<TMP_Text>();
-        counterText.text = selectedTiles.Count.ToString();
+        PathCounter pathCounter = counterInstance.GetComponentInChildren<PathCounter>();
+        pathCounter.UpdateText(selectedTiles.Count.ToString());
     }
 
     public List<Vector3Int> GetPath()
     {
         return selectedTiles;
+    }
+
+    void ClearCounters()
+    {
+        foreach (Transform counter in counters)
+        {
+            Destroy(counter.gameObject);
+        }
+        counters.Clear();
     }
 }
