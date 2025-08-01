@@ -19,7 +19,6 @@ public class LevelManager : MonoBehaviour
     [SerializeField] List<Vector3Int> playableTiles = new();
 
     [SerializeField] Transform player;
-    [SerializeField] Transform cameraMoveBoundary;
 
     public static LevelManager instance;
     void Awake()
@@ -29,14 +28,20 @@ public class LevelManager : MonoBehaviour
     void OnEnable()
     {
         Events.Level.StartLoop += SetPathTilemapToGroundLayer;
-        Events.Level.LoopComplete += SetPathTilemapToFogLayer;
 
+        Events.Level.ReachedNextTile += RemoveTileFromPath;
+
+        Events.Level.LoopComplete += SetPathTilemapToFogLayer;
         Events.Level.LoopComplete += ResetTiles;
     } 
     void OnDisable()
     {
         Events.Level.StartLoop -= SetPathTilemapToGroundLayer;
+
+        Events.Level.ReachedNextTile -= RemoveTileFromPath;
+
         Events.Level.LoopComplete -= SetPathTilemapToFogLayer;
+        Events.Level.LoopComplete -= ResetTiles;
     }
     void Start()
     {
@@ -64,11 +69,6 @@ public class LevelManager : MonoBehaviour
         player.position = worldTilemap.CellToWorld(centerTile) + (Vector3.one * 0.5f);
         playerStartTilePos = centerTile;
 
-        //configure the camera movement boundary
-        int boundaryBorderSpacing = 5;
-        cameraMoveBoundary.position = player.position;
-        cameraMoveBoundary.localScale = new Vector3(levelWidth - boundaryBorderSpacing, levelHeight - boundaryBorderSpacing, 0);
-
         // set start pos tile to tent sprite
         worldTilemap.SetTile(playerStartTilePos, tentTile);
 
@@ -95,12 +95,16 @@ public class LevelManager : MonoBehaviour
     }
     #endregion
 
-    public void ChangeTileToSelected(Vector3Int selectedTilePos)
+    public void AddTileToPath(Vector3Int selectedTilePos)
     {
         if (worldTilemap.HasTile(selectedTilePos))
         {
             pathTilemap.SetTile(selectedTilePos, selectedTile);
         }
+    }
+    void RemoveTileFromPath(Vector3Int tileToRemove)
+    {
+        pathTilemap.SetTile(tileToRemove, null);
     }
 
     public void ResetTiles()

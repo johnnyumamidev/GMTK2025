@@ -20,9 +20,12 @@ public class HealthEvents
 
 public class LevelEvents
 {
+    public UnityAction PathDrawnIsClosedLoop;
+    public UnityAction PathDrawnIsOpen;
     public UnityAction GridGenerated;
     public UnityAction<List<Vector3Int>> ItemsGenerated;
     public UnityAction Reset;
     public UnityAction StartLoop;
+    public UnityAction<Vector3Int> ReachedNextTile;
     public UnityAction LoopComplete;
 }

@@ -20,29 +20,16 @@ public class PathManager : MonoBehaviour
     {
         levelManager = FindObjectOfType<LevelManager>();
 
-        Events.Level.LoopComplete += ClearCounters;
+        Events.Level.LoopComplete += Reset;
     }
     void OnDisable()
     {
-        Events.Level.LoopComplete -= ClearCounters;
-    }
-    void Update()
-    {
-        //TESTING
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            selectedTiles.Clear();
-            levelManager.ResetTiles();
-
-            ClearCounters();
-
-            Events.Level.Reset?.Invoke();
-        }
+        Events.Level.LoopComplete -= Reset;
     }
 
     public void AddTile(Vector3Int _tilePos)
     {
-        if (selectedTiles.Contains(_tilePos) || !levelManager.GetPlayableTiles().Contains(_tilePos))
+        if (selectedTiles.Contains(_tilePos) || !levelManager.GetPlayableTiles().Contains(_tilePos) || _tilePos == levelManager.GetStartingTilePos())
             return;
 
         if (selectedTiles.Count == 0)
@@ -52,6 +39,7 @@ public class PathManager : MonoBehaviour
         else
         {
             CheckForNeighboringTiles(_tilePos, selectedTiles[^1]);
+
         }
     }
 
@@ -63,12 +51,29 @@ public class PathManager : MonoBehaviour
             if (_tilePos == neighborTile)
             {
                 selectedTiles.Add(_tilePos);
-                levelManager.ChangeTileToSelected(_tilePos);
+                levelManager.AddTileToPath(_tilePos);
                 SpawnCounter(_tilePos);
+
+                foreach (Vector3Int dir in neighboringTileDirections)
+                {
+                    Vector3Int neighbor = levelManager.GetStartingTilePos() + dir;
+                    if (neighbor == _tilePos)
+                    {
+                        // loop is closed!
+                        Events.Level.PathDrawnIsClosedLoop?.Invoke();
+                        break;
+                    }
+                    else
+                    {
+                        Events.Level.PathDrawnIsOpen?.Invoke();
+                    }
+                }
+
                 break;
             }
         }
     }
+
     void SpawnCounter(Vector3Int tilePos)
     {
         Vector3 worldPos = levelManager.GetWorldTilemap().CellToWorld(tilePos);
@@ -86,12 +91,16 @@ public class PathManager : MonoBehaviour
         return selectedTiles;
     }
 
-    void ClearCounters()
+    void Reset()
     {
         foreach (Transform counter in counters)
         {
             Destroy(counter.gameObject);
         }
         counters.Clear();
+
+        selectedTiles.Clear();
+        levelManager.ResetTiles();
+        Events.Level.Reset?.Invoke();
     }
 }

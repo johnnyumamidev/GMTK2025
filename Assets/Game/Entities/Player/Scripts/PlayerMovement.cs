@@ -11,15 +11,19 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float distanceToTargetThreshold = 0.15f;
     int pathIndex = 0;
     public bool isReady = false;
+    Vector3Int positionAtStartOfLoop;
+
     void OnEnable()
     {
         Events.Level.Reset += Reset;
         Events.Level.StartLoop += ReadyNextMove;
+        Events.Level.StartLoop += StoreStartPosition;
     }
     void OnDisable()
     {
         Events.Level.Reset -= Reset;
         Events.Level.StartLoop -= ReadyNextMove;
+        Events.Level.StartLoop -= StoreStartPosition;
     }
     void Update()
     {
@@ -31,7 +35,9 @@ public class PlayerMovement : MonoBehaviour
 
     void Move()
     {
-        List<Vector3Int> path = pathManager.GetPath();
+        List<Vector3Int> path = new(pathManager.GetPath());
+        path.Add(positionAtStartOfLoop);
+        
         if (path.Count <= 0)
             return;
 
@@ -44,12 +50,16 @@ public class PlayerMovement : MonoBehaviour
             transform.position = targetPosition;
             isReady = false;
 
+            Events.Level.ReachedNextTile?.Invoke(path[pathIndex]);
+
             if (pathIndex < path.Count - 1)
+            {
                 pathIndex++;
+                Invoke("ReadyNextMove", delayBetweenMoves);
+            }
             else
                 Events.Level.LoopComplete?.Invoke();
 
-            Invoke("ReadyNextMove", delayBetweenMoves);
         }
 
         transform.position = Vector3.Lerp(transform.position, targetPosition, speed * Time.deltaTime);
@@ -59,7 +69,11 @@ public class PlayerMovement : MonoBehaviour
     {
         isReady = true;
     }
-
+    void StoreStartPosition()
+    {
+        Vector3Int pos = levelManager.GetWorldTilemap().WorldToCell(transform.position);
+        positionAtStartOfLoop = pos;
+    }
     void Reset()
     {
         pathIndex = 0;
