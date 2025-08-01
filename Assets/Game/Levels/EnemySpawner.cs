@@ -8,6 +8,7 @@ public class EnemySpawner : MonoBehaviour
 
     [SerializeField] Transform enemyPrefab;
     [SerializeField] int enemySpawnCount = 0;
+    [SerializeField] int minDistanceFromStartTile = 0;
      void OnEnable()
     {
         Events.Level.ItemsGenerated += SpawnEnemies;
@@ -20,6 +21,18 @@ public class EnemySpawner : MonoBehaviour
     void SpawnEnemies(List<Vector3Int> possibleSpawnPositions)
     {
         List<Vector3Int> validSpawnPoints = new(possibleSpawnPositions);
+        List<Vector3Int> tooCloseToStartSpawns = new();
+        foreach (Vector3Int spawnPoint in possibleSpawnPositions)
+        {
+            if (Vector3Int.Distance(spawnPoint, levelManager.GetStartingTilePos()) < minDistanceFromStartTile)
+            {
+                tooCloseToStartSpawns.Add(spawnPoint);
+            }
+        }
+        foreach (Vector3Int spawnPoint in tooCloseToStartSpawns)
+        {
+            validSpawnPoints.Remove(spawnPoint);
+        }
 
         for (int i = 0; i < enemySpawnCount; i++)
         {

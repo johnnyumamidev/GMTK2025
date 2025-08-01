@@ -8,6 +8,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] TileBase baseTile;
     [SerializeField] TileBase selectedTile;
     [SerializeField] TileBase tentTile;
+    [SerializeField] TileBase fogTile;
     [SerializeField] Tilemap worldTilemap;
     [SerializeField] Tilemap fogTilemap;
     [SerializeField] Tilemap pathTilemap;
@@ -58,7 +59,7 @@ public class LevelManager : MonoBehaviour
             {
                 Vector3Int currentTile = levelGenStartTilePos + new Vector3Int(x, y, 0);
                 worldTilemap.SetTile(currentTile, baseTile);
-                fogTilemap.SetTile(currentTile, baseTile);
+                fogTilemap.SetTile(currentTile, fogTile);
 
                 playableTiles.Add(currentTile);
             }

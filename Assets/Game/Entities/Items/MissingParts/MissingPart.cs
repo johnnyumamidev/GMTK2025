@@ -4,15 +4,8 @@ using UnityEngine;
 
 public class MissingPart : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public void Collect()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Events.Level.CollectedMissingPart?.Invoke(this);
     }
 }

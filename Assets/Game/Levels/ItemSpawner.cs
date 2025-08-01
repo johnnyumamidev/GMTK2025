@@ -8,6 +8,8 @@ public class ItemSpawner : MonoBehaviour
 
     [SerializeField] Transform goalItem;
     [SerializeField] int itemSpawnCount = 0;
+    [SerializeField] int minDistanceFromStartTile = 4;
+
      void OnEnable()
     {
         Events.Level.GridGenerated += SpawnItems;
@@ -16,13 +18,16 @@ public class ItemSpawner : MonoBehaviour
     {
         Events.Level.GridGenerated -= SpawnItems;
     }
+    void Start()
+    {
+        Events.Level.MissingPartsGenerated?.Invoke(itemSpawnCount);
+    }
 
     void SpawnItems()
     {
         // make goal collectibles spawn reasonably far away from start position 
         List<Vector3Int> possibleSpawnPositions = new(levelManager.GetPlayableTiles());
         List<Vector3Int> tooCloseToStartSpawns = new();
-        int minDistanceFromStartTile = 4;
         foreach (Vector3Int spawnPoint in possibleSpawnPositions)
         {
             if (Vector3Int.Distance(spawnPoint, levelManager.GetStartingTilePos()) < minDistanceFromStartTile)

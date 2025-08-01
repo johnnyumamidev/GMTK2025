@@ -12,6 +12,8 @@ public class PlayerMovement : MonoBehaviour
     int pathIndex = 0;
     public bool isReady = false;
     Vector3Int positionAtStartOfLoop;
+    Vector3 targetPosition;
+    [SerializeField] Transform collisionDetector;
 
     void OnEnable()
     {
@@ -27,6 +29,8 @@ public class PlayerMovement : MonoBehaviour
     }
     void Update()
     {
+        collisionDetector.position = targetPosition;
+
         if (isReady)
         {
             Move();
@@ -37,11 +41,11 @@ public class PlayerMovement : MonoBehaviour
     {
         List<Vector3Int> path = new(pathManager.GetPath());
         path.Add(positionAtStartOfLoop);
-        
+
         if (path.Count <= 0)
             return;
 
-        Vector3 targetPosition = levelManager.GetWorldTilemap().CellToWorld(path[pathIndex]);
+        targetPosition = levelManager.GetWorldTilemap().CellToWorld(path[pathIndex]);
         Vector3 offset = Vector3.one * 0.5f;
         targetPosition += offset;
 
@@ -59,15 +63,16 @@ public class PlayerMovement : MonoBehaviour
             }
             else
                 Events.Level.LoopComplete?.Invoke();
-
         }
 
-        transform.position = Vector3.Lerp(transform.position, targetPosition, speed * Time.deltaTime);
+        Vector2 dir = targetPosition - transform.position;
+        transform.Translate(dir * speed * Time.deltaTime);  
     }
 
     void ReadyNextMove()
     {
         isReady = true;
+        Events.Level.StartMove?.Invoke();
     }
     void StoreStartPosition()
     {
@@ -77,5 +82,12 @@ public class PlayerMovement : MonoBehaviour
     void Reset()
     {
         pathIndex = 0;
+    }
+
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(collisionDetector.position, 0.25f);
     }
 }

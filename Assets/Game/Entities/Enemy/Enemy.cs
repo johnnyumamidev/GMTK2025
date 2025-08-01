@@ -14,33 +14,96 @@ public class Enemy : MonoBehaviour
     };
     Vector2 attackPoint;
     bool hasAttacked = false;
+    bool isAgressive = false;
+
+    GameObject player;
+
+    void OnEnable()
+    {
+        Events.Level.StartNight += EnableAggression;
+        Events.Level.LoopComplete += DisableAggression;
+
+        Events.Level.StartMove += MoveTowardsPlayer;
+    }
+    void OnDisable()
+    {
+        Events.Level.StartNight -= EnableAggression;
+        Events.Level.LoopComplete -= DisableAggression;
+
+        Events.Level.StartMove -= MoveTowardsPlayer;
+    }
     void Start()
     {
-        attackPoint = directions[Random.Range(0, 3)];
-
-        Quaternion targetRotation = Quaternion.LookRotation(transform.forward, attackPoint);
-        transform.rotation = targetRotation;
-
-        attackPoint += (Vector2)transform.position;
+        // store player variable for when ready to chase
+        player = GameObject.FindWithTag("Player");
     }
     void Update()
     {
+        if (!isAgressive)
+            return;
+            
         //check for player
-        Collider2D checkForPlayer = Physics2D.OverlapCircle(attackPoint, 0.25f);
-
-        if (checkForPlayer && checkForPlayer.gameObject.CompareTag("Player"))
+        foreach (Vector2 dir in directions)
         {
-            if (!hasAttacked)
+            Collider2D checkForPlayer = Physics2D.OverlapCircle((Vector2)transform.position + dir, 0.25f);
+
+            if (checkForPlayer && checkForPlayer.gameObject.CompareTag("Player"))
             {
-                Events.Health.UpdateHealth?.Invoke(-damage);
-                hasAttacked = true;   
+                if (isAgressive && !hasAttacked)
+                {
+                    Debug.Log("hit target");
+                    Events.Health.UpdateHealth?.Invoke(-damage);
+                    hasAttacked = true;
+                }
             }
         }
     }
-    
+
+    void EnableAggression()
+    {
+        isAgressive = true;
+    }
+    void DisableAggression()
+    {
+        isAgressive = false;
+    }
+    void MoveTowardsPlayer()
+    {
+        if (!isAgressive)
+            return;
+            
+        hasAttacked = false;
+
+        // calculate direction to player
+        Vector2 dirToPlayer = player.transform.position - transform.position;
+        Vector2 assignedDir;
+        // loop through each direction vector
+        for(int i = 0; i < directions.Count; i++)
+        {
+            Vector2 dir = directions[i];
+            float distance = Vector2.Distance(dir, dirToPlayer.normalized);
+            if (distance < 1)
+            {
+                // pick direction that is closest to direction to player
+                assignedDir = dir;
+
+                // move in that direction
+                transform.position += (Vector3)assignedDir;
+
+                break;
+            }
+        }
+    }
+
     void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(attackPoint, 0.25f);
+        if (isAgressive && !hasAttacked)
+        {
+            foreach (Vector2 dir in directions)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireSphere((Vector2)transform.position + dir, 0.4f);
+            }
+        }
     }
 }

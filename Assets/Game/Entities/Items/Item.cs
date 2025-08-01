@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Item : MonoBehaviour
 {
-    public void Collect()
+    public UnityEvent Collected;
+    public virtual void Collect()
     {
-        Destroy(gameObject);
+        Collected?.Invoke();
+        gameObject.SetActive(false);
     }
 }

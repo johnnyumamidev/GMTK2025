@@ -26,6 +26,10 @@ public class LevelEvents
     public UnityAction<List<Vector3Int>> ItemsGenerated;
     public UnityAction Reset;
     public UnityAction StartLoop;
+    public UnityAction StartMove;
     public UnityAction<Vector3Int> ReachedNextTile;
     public UnityAction LoopComplete;
+    public UnityAction<MissingPart> CollectedMissingPart;
+    public UnityAction<int> MissingPartsGenerated;
+    public UnityAction StartNight;
 }
