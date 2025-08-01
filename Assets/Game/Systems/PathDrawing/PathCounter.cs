@@ -7,10 +7,7 @@ public class PathCounter : MonoBehaviour
 {
     TMP_Text tmpComponent;
     MeshRenderer meshRenderer;
-
-    [SerializeField] LayerMask groundLayer;
-    [SerializeField] LayerMask fogLayer;
-
+    [SerializeField] SpriteRenderer[] arrowSprites;
     void Awake()
     {
         tmpComponent = GetComponent<TMP_Text>();
@@ -43,10 +40,18 @@ public class PathCounter : MonoBehaviour
     void SetSortLayerToGround()
     {
         meshRenderer.sortingLayerName = "Ground";
+        foreach (SpriteRenderer sprite in arrowSprites)
+        {
+            sprite.sortingLayerName = "Ground";
+        }
     }
     void SetSortLayerToFog()
     {
         meshRenderer.sortingLayerName = "Fog";
+        foreach (SpriteRenderer sprite in arrowSprites)
+        {
+            sprite.sortingLayerName = "Fog";
+        }
     }
 
     void DestroySelf(Vector3Int _playerTilePos)
@@ -55,7 +60,7 @@ public class PathCounter : MonoBehaviour
         float d = Vector3Int.Distance(m_tilePos, _playerTilePos);
         if (d < 1)
         {
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
 }

@@ -7,15 +7,22 @@ public static class Events
 {
     public static HealthEvents Health = new();
     public static LevelEvents Level = new();
+    public static CombatEvents Combat = new();
 }
 
 public class HealthEvents
 {
+    // Hit points
     public UnityAction<int> IntializeHealth;
     public UnityAction<int> UpdateHealth;
-    public UnityAction<int> GainHealth;
-    public UnityAction<int> LoseHealth;
+    public UnityAction<int> HealthChanged;
+    public UnityAction GainHealth;
+    public UnityAction LoseHealth;
     public UnityAction AllHealthLost;
+
+    // Hunger
+    public UnityAction<int> EatFood;
+    public UnityAction<int> HungerChanged;
 }
 
 public class LevelEvents
@@ -32,4 +39,11 @@ public class LevelEvents
     public UnityAction<MissingPart> CollectedMissingPart;
     public UnityAction<int> MissingPartsGenerated;
     public UnityAction StartNight;
+
+    public UnityAction<Vector3Int> NeighborDetected;
+}
+
+public class CombatEvents
+{
+    public UnityAction EnemyHit;
 }

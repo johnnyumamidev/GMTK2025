@@ -21,10 +21,12 @@ public class PathManager : MonoBehaviour
         levelManager = FindObjectOfType<LevelManager>();
 
         Events.Level.LoopComplete += Reset;
+        Events.Level.Reset += Reset;
     }
     void OnDisable()
     {
         Events.Level.LoopComplete -= Reset;
+        Events.Level.Reset -= Reset;
     }
 
     public void AddTile(Vector3Int _tilePos)
@@ -52,7 +54,7 @@ public class PathManager : MonoBehaviour
             {
                 selectedTiles.Add(_tilePos);
                 levelManager.AddTileToPath(_tilePos);
-                SpawnCounter(_tilePos);
+                SpawnCounter(_tilePos, _point);
 
                 foreach (Vector3Int dir in neighboringTileDirections)
                 {
@@ -74,12 +76,20 @@ public class PathManager : MonoBehaviour
         }
     }
 
-    void SpawnCounter(Vector3Int tilePos)
+    void SpawnCounter(Vector3Int tilePos, Vector3Int start)
     {
         Vector3 worldPos = levelManager.GetWorldTilemap().CellToWorld(tilePos);
         worldPos += Vector3.one * 0.5f;
         worldPos.z *= -1;
+
+        //spawn path visual
         Transform counterInstance = Instantiate(counterPrefab, worldPos, Quaternion.identity, levelManager.transform);
+
+        //get direction from prev point to next point
+        Vector2 direction = levelManager.GetWorldTilemap().CellToWorld(tilePos) - levelManager.GetWorldTilemap().CellToWorld(start);
+        Quaternion targetRotation = Quaternion.LookRotation(counterInstance.forward, direction);
+        counterInstance.rotation = targetRotation;
+
         counters.Add(counterInstance);
 
         PathCounter pathCounter = counterInstance.GetComponentInChildren<PathCounter>();
@@ -101,6 +111,5 @@ public class PathManager : MonoBehaviour
 
         selectedTiles.Clear();
         levelManager.ResetTiles();
-        Events.Level.Reset?.Invoke();
     }
 }

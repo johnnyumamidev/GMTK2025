@@ -5,14 +5,18 @@ using UnityEngine;
 public class HealthComponent : MonoBehaviour
 {
     [SerializeField] int maxHealth, currentHealth;
-
+    [SerializeField] int repairAmt = 5;
     void OnEnable()
     {
         Events.Health.UpdateHealth += UpdateHealth;
+
+        Events.Level.LoopComplete += Repair;
     }
     void OnDisable()
     {
         Events.Health.UpdateHealth -= UpdateHealth;
+
+        Events.Level.LoopComplete -= Repair;
     }
     void Start()
     {
@@ -21,6 +25,10 @@ public class HealthComponent : MonoBehaviour
         Events.Health.IntializeHealth?.Invoke(maxHealth);
     }
 
+    void Repair()
+    {
+        UpdateHealth(repairAmt);
+    }
     void UpdateHealth(int amount)
     {
         currentHealth += amount;
@@ -33,18 +41,25 @@ public class HealthComponent : MonoBehaviour
         {
             IncreaseHealth();
         }
+
+        Events.Health.HealthChanged?.Invoke(currentHealth);
     }
     void IncreaseHealth()
     {
-        Events.Health.GainHealth?.Invoke(currentHealth);
+        if (currentHealth > maxHealth)
+            currentHealth = maxHealth;
+
+        Events.Health.GainHealth?.Invoke();
     }
     void DecreaseHealth()
     {
-        Events.Health.LoseHealth?.Invoke(currentHealth);
-
         if (currentHealth <= 0)
         {
             Events.Health.AllHealthLost?.Invoke();
+        }
+        else
+        {
+            Events.Health.LoseHealth?.Invoke();
         }
     }
 }

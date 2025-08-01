@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                Events.Level.LoopComplete?.Invoke();
+                Events.Level.Reset?.Invoke();
             }
         }
 

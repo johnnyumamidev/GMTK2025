@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: BaseTile
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 7482667652216324306, guid: b14435934e0bd874abefaded9486892a, type: 3}
-  m_Color: {r: 0.06872552, g: 0.122641504, b: 0.07106969, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 7573ad244bdb58c4fb547f6db3dd52ea, type: 3}
+  m_Color: {r: 0.20334639, g: 0.26842025, b: 0.3018868, a: 1}
   m_Transform:
     e00: 1
     e01: 0

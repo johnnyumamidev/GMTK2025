@@ -11,15 +11,13 @@ public class HealthUI : MonoBehaviour
     {
         Events.Health.IntializeHealth += IntializeHealth;
 
-        Events.Health.GainHealth += UpdateHealth;
-        Events.Health.LoseHealth += UpdateHealth;
+        Events.Health.HealthChanged += UpdateHealth;
     }
     void OnDisable()
     {
         Events.Health.IntializeHealth -= IntializeHealth;
 
-        Events.Health.GainHealth -= UpdateHealth;
-        Events.Health.LoseHealth -= UpdateHealth;
+        Events.Health.HealthChanged -= UpdateHealth;
     }
 
     void IntializeHealth(int _health)

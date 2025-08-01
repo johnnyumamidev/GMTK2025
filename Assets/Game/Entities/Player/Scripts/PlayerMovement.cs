@@ -17,15 +17,17 @@ public class PlayerMovement : MonoBehaviour
 
     void OnEnable()
     {
-        Events.Level.Reset += Reset;
         Events.Level.StartLoop += ReadyNextMove;
         Events.Level.StartLoop += StoreStartPosition;
+
+        Events.Level.LoopComplete += Reset;
     }
     void OnDisable()
     {
-        Events.Level.Reset -= Reset;
         Events.Level.StartLoop -= ReadyNextMove;
         Events.Level.StartLoop -= StoreStartPosition;
+
+        Events.Level.LoopComplete -= Reset;
     }
     void Update()
     {

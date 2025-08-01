@@ -7,7 +7,6 @@ public class LevelManager : MonoBehaviour
 {
     [SerializeField] TileBase baseTile;
     [SerializeField] TileBase selectedTile;
-    [SerializeField] TileBase tentTile;
     [SerializeField] TileBase fogTile;
     [SerializeField] Tilemap worldTilemap;
     [SerializeField] Tilemap fogTilemap;
@@ -20,6 +19,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] List<Vector3Int> playableTiles = new();
 
     [SerializeField] Transform player;
+    [SerializeField] Transform homeBase;
 
     public static LevelManager instance;
     void Awake()
@@ -70,8 +70,8 @@ public class LevelManager : MonoBehaviour
         player.position = worldTilemap.CellToWorld(centerTile) + (Vector3.one * 0.5f);
         playerStartTilePos = centerTile;
 
-        // set start pos tile to tent sprite
-        worldTilemap.SetTile(playerStartTilePos, tentTile);
+        // spawn home base gameobject 
+        Instantiate(homeBase, player.position, Quaternion.identity);
 
         // invoke event to start spawning other units
         Events.Level.GridGenerated?.Invoke();

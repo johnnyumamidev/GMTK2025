@@ -39,8 +39,15 @@ public class Enemy : MonoBehaviour
     }
     void Update()
     {
+        // consume any food enemy overlaps
+        Collider2D obj = Physics2D.OverlapCircle(transform.position, 0.25f);
+        if (obj && obj.TryGetComponent(out Food food))
+        {
+            Destroy(food.gameObject);
+        }
+        
         if (!isAgressive)
-            return;
+                return;
             
         //check for player
         foreach (Vector2 dir in directions)

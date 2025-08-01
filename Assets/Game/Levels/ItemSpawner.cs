@@ -7,26 +7,32 @@ public class ItemSpawner : MonoBehaviour
     [SerializeField] LevelManager levelManager;
 
     [SerializeField] Transform goalItem;
-    [SerializeField] int itemSpawnCount = 0;
+    [SerializeField] Transform foodPrefab;
+    [SerializeField] int goalItemSpawnCount = 0;
+    [SerializeField] int foodSpawnCount = 0;
     [SerializeField] int minDistanceFromStartTile = 4;
-
-     void OnEnable()
+    List<Vector3Int> possibleSpawnPositions;
+    void OnEnable()
     {
-        Events.Level.GridGenerated += SpawnItems;
+        Events.Level.GridGenerated += SpawnGoalItems;
+
+        Events.Level.LoopComplete += SpawnFoodItems;
     }
     void OnDisable()
     {
-        Events.Level.GridGenerated -= SpawnItems;
+        Events.Level.GridGenerated -= SpawnGoalItems;
+
+        Events.Level.LoopComplete -= SpawnFoodItems;
     }
     void Start()
     {
-        Events.Level.MissingPartsGenerated?.Invoke(itemSpawnCount);
+        Events.Level.MissingPartsGenerated?.Invoke(goalItemSpawnCount);
     }
 
-    void SpawnItems()
+    void SpawnGoalItems()
     {
         // make goal collectibles spawn reasonably far away from start position 
-        List<Vector3Int> possibleSpawnPositions = new(levelManager.GetPlayableTiles());
+        possibleSpawnPositions = new(levelManager.GetPlayableTiles());
         List<Vector3Int> tooCloseToStartSpawns = new();
         foreach (Vector3Int spawnPoint in possibleSpawnPositions)
         {
@@ -41,7 +47,7 @@ public class ItemSpawner : MonoBehaviour
         }
 
         // spawn goal items
-        for (int i = 0; i < itemSpawnCount; i++)
+        for (int i = 0; i < goalItemSpawnCount; i++)
         {
             Vector3Int randomSpawnPos = possibleSpawnPositions[Random.Range(0, possibleSpawnPositions.Count - 1)];
             Vector3 worldPos = levelManager.GetWorldTilemap().CellToWorld(randomSpawnPos);
@@ -51,14 +57,29 @@ public class ItemSpawner : MonoBehaviour
 
             possibleSpawnPositions.Remove(randomSpawnPos);
         }
-
+        
         // re-add close spawn points
         foreach (Vector3Int spawnPoint in tooCloseToStartSpawns)
         {
             possibleSpawnPositions.Add(spawnPoint);
         }
 
+        SpawnFoodItems();
+    }
+
+    void SpawnFoodItems()
+    {
         // spawn other items (food, herbs)
+        for (int i = 0; i < foodSpawnCount; i++)
+        {
+            Vector3Int randomSpawnPos = possibleSpawnPositions[Random.Range(0, possibleSpawnPositions.Count - 1)];
+            Vector3 worldPos = levelManager.GetWorldTilemap().CellToWorld(randomSpawnPos);
+            worldPos += Vector3.one * 0.5f;
+            
+            Instantiate(foodPrefab, worldPos, Quaternion.identity);
+            
+            possibleSpawnPositions.Remove(randomSpawnPos);
+        }
 
         Events.Level.ItemsGenerated(possibleSpawnPositions);
     }

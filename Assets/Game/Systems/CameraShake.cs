@@ -16,9 +16,14 @@ public class CameraShake : MonoBehaviour
     }
     void OnEnable()
     {
-        ShakeCamera();
+        Events.Health.LoseHealth += ShakeCamera;
     }
-    public void ShakeCamera()
+    void OnDisable()
+    {
+        Events.Health.LoseHealth -= ShakeCamera;
+    }
+
+    void ShakeCamera()
     {
         cmPerlin.m_AmplitudeGain = shakeIntensity;
         Invoke("StopShake", shakeLength);
