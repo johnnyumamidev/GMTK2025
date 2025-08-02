@@ -18,10 +18,12 @@ public class Enemy : MonoBehaviour
 
     GameObject player;
 
+    [SerializeField] SFXEnemy enemySFX;
     void OnEnable()
     {
         Events.Level.StartNight += EnableAggression;
         Events.Level.LoopComplete += DisableAggression;
+        Events.Level.LoopComplete += MoveAtNight;
 
         Events.Level.StartMove += MoveTowardsPlayer;
     }
@@ -29,6 +31,7 @@ public class Enemy : MonoBehaviour
     {
         Events.Level.StartNight -= EnableAggression;
         Events.Level.LoopComplete -= DisableAggression;
+        Events.Level.LoopComplete -= MoveAtNight;
 
         Events.Level.StartMove -= MoveTowardsPlayer;
     }
@@ -97,9 +100,19 @@ public class Enemy : MonoBehaviour
                 // move in that direction
                 transform.position += (Vector3)assignedDir;
 
+                enemySFX.PlayStepSFX();
                 break;
             }
         }
+    }
+
+    void MoveAtNight()
+    {
+        Vector2 dir = directions[Random.Range(0, 3)];
+        Vector3Int targetTile = LevelManager.instance.GetWorldTilemap().WorldToCell((Vector2)transform.position + dir);
+
+        if( LevelManager.instance.GetWorldTilemap().HasTile(targetTile))
+            transform.position += (Vector3)dir;
     }
 
     void OnDrawGizmos()

@@ -21,6 +21,8 @@ public class PlayerMovement : MonoBehaviour
         Events.Level.StartLoop += StoreStartPosition;
 
         Events.Level.LoopComplete += Reset;
+
+        Events.Health.AllHealthLost += StopMovement;
     }
     void OnDisable()
     {
@@ -28,6 +30,8 @@ public class PlayerMovement : MonoBehaviour
         Events.Level.StartLoop -= StoreStartPosition;
 
         Events.Level.LoopComplete -= Reset;
+
+        Events.Health.AllHealthLost -= StopMovement;
     }
     void Update()
     {
@@ -85,7 +89,10 @@ public class PlayerMovement : MonoBehaviour
     {
         pathIndex = 0;
     }
-
+    void StopMovement()
+    {
+        isReady = false;
+    }
 
     void OnDrawGizmos()
     {

@@ -9,6 +9,7 @@ public class ItemCollector : MonoBehaviour
         if (other.transform.TryGetComponent(out Item item))
         {
             item.Collect();
+            Events.Level.CollectedItem?.Invoke();
         }
     }
 }

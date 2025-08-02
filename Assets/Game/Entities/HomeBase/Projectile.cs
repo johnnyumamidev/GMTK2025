@@ -7,6 +7,7 @@ public class Projectile : MonoBehaviour
     public Vector2 moveDirection;
     public float speed;
     public Transform sprite;
+    public Transform splatterFX;
     void Update()
     {
         transform.Translate(moveDirection.normalized * speed * Time.deltaTime);
@@ -19,8 +20,12 @@ public class Projectile : MonoBehaviour
         if (hit && hit.TryGetComponent(out Enemy enemy))
         {
             Events.Combat.EnemyHit?.Invoke();
-            Debug.Log(enemy);
             Destroy(enemy.gameObject);
+
+            //spawn splatter visual
+            Transform splatter = Instantiate(splatterFX, enemy.transform.position, Quaternion.identity);
+            splatter.gameObject.SetActive(true);
+
             Destroy(gameObject);
         }
     }

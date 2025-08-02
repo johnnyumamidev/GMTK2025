@@ -15,6 +15,10 @@ public class HomeBase : MonoBehaviour
     [SerializeField] Sprite wallsUpSprite, wallsDownSprite;
 
     public UnityEvent ProjectileFired;
+
+    [SerializeField] AudioSource sfxSource;
+    [SerializeField] AudioClip cannonSFX;
+    [SerializeField] AudioClip doorSFX;
     void OnEnable()
     {
         Events.Combat.EnemyHit += ReadyProjectile;
@@ -52,6 +56,7 @@ public class HomeBase : MonoBehaviour
         Projectile projectileComponent = _projectile.GetComponent<Projectile>();
         projectileComponent.moveDirection = dirToTarget;
 
+        sfxSource.PlayOneShot(cannonSFX);
         ProjectileFired?.Invoke();
 
         projectileReady = false;
@@ -66,10 +71,14 @@ public class HomeBase : MonoBehaviour
     {
         walls.sprite = wallsDownSprite;
         cannon.gameObject.SetActive(true);
+
+        sfxSource.PlayOneShot(doorSFX);
     }
     void WallsUp()
     {
         walls.sprite = wallsUpSprite;
         cannon.gameObject.SetActive(false);
+
+        sfxSource.PlayOneShot(doorSFX);
     }
 }
