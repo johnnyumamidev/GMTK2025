@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 487a0f6535ac7c74381d43168283d9aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hungerValue: 5
+  hungerValue: 4
 --- !u!114 &2132187903368396503
 MonoBehaviour:
   m_ObjectHideFlags: 0

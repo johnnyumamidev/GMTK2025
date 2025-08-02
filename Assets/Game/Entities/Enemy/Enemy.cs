@@ -111,8 +111,10 @@ public class Enemy : MonoBehaviour
         Vector2 dir = directions[Random.Range(0, 3)];
         Vector3Int targetTile = LevelManager.instance.GetWorldTilemap().WorldToCell((Vector2)transform.position + dir);
 
-        if( LevelManager.instance.GetWorldTilemap().HasTile(targetTile))
+        if (LevelManager.instance.GetWorldTilemap().HasTile(targetTile))
             transform.position += (Vector3)dir;
+            
+        enemySFX.PlayStepSFX();
     }
 
     void OnDrawGizmos()

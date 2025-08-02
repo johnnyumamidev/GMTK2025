@@ -1,12 +1,15 @@
  using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class HungerUI : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI hungerDisplay;
-    int hungerValue = 0;
+    [SerializeField] Image hungerBar;
+    float startingHunger = 0;
+    float hungerValue = 0;
     private void OnEnable() {
         Events.Health.HungerChanged += UpdateHunger;
     }
@@ -15,11 +18,12 @@ public class HungerUI : MonoBehaviour
     }
     void Update()
     {
-        hungerDisplay.text = "Hunger: " + hungerValue;
+        hungerBar.fillAmount = hungerValue / startingHunger;
     }
 
-    void UpdateHunger(int value)
+    void UpdateHunger(float curHunger, float maxHunger)
     {
-        hungerValue = value;
+        hungerValue = curHunger;
+        startingHunger = maxHunger;
     }
 }

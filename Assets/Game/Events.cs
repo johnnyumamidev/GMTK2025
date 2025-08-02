@@ -22,7 +22,7 @@ public class HealthEvents
 
     // Hunger
     public UnityAction<int> EatFood;
-    public UnityAction<int> HungerChanged;
+    public UnityAction<float, float> HungerChanged;
 }
 
 public class LevelEvents

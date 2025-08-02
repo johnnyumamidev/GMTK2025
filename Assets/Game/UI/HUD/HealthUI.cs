@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class HealthUI : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI healthDisplay;
+    [SerializeField] Image hpMeter;
     int maxHealth, currentHealth;
     void OnEnable()
     {
@@ -34,6 +36,7 @@ public class HealthUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        healthDisplay.text = "HP: " + currentHealth + "/" + maxHealth;
+        hpMeter.fillAmount = (float)currentHealth / (float)maxHealth;
+        // healthDisplay.text = "HP: " + currentHealth + "/" + maxHealth;
     }
 }

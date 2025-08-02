@@ -41,7 +41,6 @@ public class PathManager : MonoBehaviour
         else
         {
             CheckForNeighboringTiles(_tilePos, selectedTiles[^1]);
-
         }
     }
 
@@ -70,6 +69,8 @@ public class PathManager : MonoBehaviour
                         Events.Level.PathDrawnIsOpen?.Invoke();
                     }
                 }
+
+                SFXManager.instance.PlayPathDrawSFX();
 
                 break;
             }

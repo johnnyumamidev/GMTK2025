@@ -12,7 +12,7 @@ public class HungerManager : MonoBehaviour
     {
         currentHunger = startingHunger;
 
-        Events.Health.HungerChanged?.Invoke(currentHunger);
+        Events.Health.HungerChanged?.Invoke((float)currentHunger, (float)startingHunger);
 
         Events.Level.StartMove += DepleteHunger;
 
@@ -33,12 +33,15 @@ public class HungerManager : MonoBehaviour
             Events.Health.AllHealthLost?.Invoke();
         }
         else
-            Events.Health.HungerChanged?.Invoke(currentHunger);
+            Events.Health.HungerChanged?.Invoke(currentHunger, startingHunger);
     }
     void RefillHunger(int amt)
     {
         currentHunger += amt;
 
-        Events.Health.HungerChanged?.Invoke(currentHunger);
+        if (currentHunger > startingHunger)
+            currentHunger = startingHunger;
+
+        Events.Health.HungerChanged?.Invoke(currentHunger, startingHunger);
     }
 }
