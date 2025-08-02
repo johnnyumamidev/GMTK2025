@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     List<MissingPart> foundParts = new();
     int missingPartsInGame = 0;
     [SerializeField] float gameSpeed = 2;
+
+    [SerializeField] GameObject WinScreen, LoseScreen;
     void OnEnable()
     {
         Events.Level.PathDrawnIsClosedLoop += SetPathIsClosedToTrue;
@@ -20,6 +22,8 @@ public class GameManager : MonoBehaviour
 
         Events.Level.CollectedMissingPart += AddMissingPart;
         Events.Level.MissingPartsGenerated += SetNumberOfMissingParts;
+
+        Events.Health.AllHealthLost += LoseGame;
     }
     void OnDisable()
     {
@@ -31,12 +35,17 @@ public class GameManager : MonoBehaviour
 
         Events.Level.CollectedMissingPart -= AddMissingPart;
         Events.Level.MissingPartsGenerated -= SetNumberOfMissingParts;
+
+        Events.Health.AllHealthLost -= LoseGame;
     }
 
     void Update()
     {
         if (currentGameState == GameState.DrawPathPhase)
         {
+            WinScreen.SetActive(false);
+            LoseScreen.SetActive(false);
+
             if (Input.GetKeyDown(KeyCode.Tab))
             {
                 if (drawnPathIsClosed)
@@ -71,8 +80,10 @@ public class GameManager : MonoBehaviour
                 Events.Level.StartLoop?.Invoke();
                 break;
             case GameState.GameLoss:
+                LoseScreen.SetActive(true);
                 break;
             case GameState.GameWin:
+                WinScreen.SetActive(true);
                 break;
         }
         currentGameState = newState;
@@ -96,7 +107,7 @@ public class GameManager : MonoBehaviour
     {
         if (foundParts.Contains(foundPart))
             return;
-        
+
         Debug.Log("found part");
         foundParts.Add(foundPart);
     }
@@ -112,6 +123,10 @@ public class GameManager : MonoBehaviour
         {
             ChangeGameState(GameState.GameWin);
         }
+    }
+    void LoseGame()
+    {
+        ChangeGameState(GameState.GameLoss);
     }
 }
 

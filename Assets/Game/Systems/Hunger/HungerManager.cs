@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class HungerManager : MonoBehaviour
 {
-    public int maxHunger;
+    public int startingHunger;
     public int currentHunger;
 
     // Start is called before the first frame update
     void OnEnable()
     {
-        currentHunger = maxHunger;
+        currentHunger = startingHunger;
 
         Events.Health.HungerChanged?.Invoke(currentHunger);
 
@@ -28,7 +28,12 @@ public class HungerManager : MonoBehaviour
     {
         currentHunger--;
 
-        Events.Health.HungerChanged?.Invoke(currentHunger);
+        if (currentHunger <= 0)
+        {
+            Events.Health.AllHealthLost?.Invoke();
+        }
+        else
+            Events.Health.HungerChanged?.Invoke(currentHunger);
     }
     void RefillHunger(int amt)
     {

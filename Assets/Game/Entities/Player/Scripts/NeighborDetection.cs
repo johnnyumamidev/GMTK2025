@@ -35,8 +35,11 @@ public class NeighborDetection : MonoBehaviour
         Gizmos.color = Color.blue;
         foreach (var neighbor in neighboringTileDirections)
         {
-            Vector3Int pos = LevelManager.instance.GetWorldTilemap().WorldToCell(transform.position) + new Vector3Int(1,1,0);
-            Gizmos.DrawWireSphere(pos + neighbor, 0.25f);
+            if (Application.isPlaying)
+            {
+                Vector3Int pos = LevelManager.instance.GetWorldTilemap().WorldToCell(transform.position) + new Vector3Int(1,1,0);
+                Gizmos.DrawWireSphere(pos + neighbor, 0.25f);
+            }
         }
     }
 }
