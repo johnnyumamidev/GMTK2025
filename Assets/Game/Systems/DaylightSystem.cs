@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class DaylightSystem : MonoBehaviour
 {
     public int startingTimePoints;
     public int timePoints;
-
     [SerializeField] Light2D worldLight;
+
     [SerializeField] Color dayColor, nightColor;
 
     public DaylightUI daylightUI;
@@ -19,7 +20,7 @@ public class DaylightSystem : MonoBehaviour
     void OnDisable()
     {
         Events.Level.ReachedNextTile -= DecreaseTime;
-     
+
         Events.Level.LoopComplete -= ResetTime;
     }
     void Start()
@@ -42,6 +43,7 @@ public class DaylightSystem : MonoBehaviour
 
     void ResetTime()
     {
+        worldLight.color = dayColor;
         timePoints = startingTimePoints;
         daylightUI.UpdateTime(startingTimePoints, timePoints);
     }
