@@ -8,15 +8,19 @@ public class ButtonInteraction : MonoBehaviour, IPointerEnterHandler, IPointerEx
 {
     public float scaler;
 
+    public UnityEvent PointerEnter;
+    public UnityEvent PointerExit;
     public UnityEvent PointerDown;
 
     public void OnPointerEnter(PointerEventData pointerEventData)
     {
+        PointerEnter?.Invoke();
         transform.localScale = transform.localScale * scaler;
     }
 
     public void OnPointerExit(PointerEventData pointerEventData)
     {
+        PointerExit?.Invoke();
         transform.localScale = Vector3.one;
     }
 

@@ -6,10 +6,13 @@ using Cinemachine;
 public class CameraController : MonoBehaviour
 {
     [SerializeField] GameObject worldCam;
+    CinemachineVirtualCamera worldVirtualCam;
+    [SerializeField] float zoomSpeed;
     [SerializeField] GameObject playerFollowCam;
 
     void OnEnable()
     {
+        worldVirtualCam = worldCam.GetComponent<CinemachineVirtualCamera>();
         Events.Level.StartLoop += ShiftToPlayer;
         Events.Level.LoopComplete += ShiftToWorld;
     }
@@ -17,6 +20,12 @@ public class CameraController : MonoBehaviour
     {
         Events.Level.StartLoop -= ShiftToPlayer;
         Events.Level.LoopComplete -= ShiftToWorld;
+    }
+    void Update()
+    {
+        //zoom in world cam using mouse wheel
+        if(worldCam.activeSelf)
+            worldVirtualCam.m_Lens.OrthographicSize -= Input.mouseScrollDelta.y * zoomSpeed * Time.deltaTime;
     }
 
     void ShiftToPlayer()

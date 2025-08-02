@@ -22,11 +22,15 @@ public class PathManager : MonoBehaviour
 
         Events.Level.LoopComplete += Reset;
         Events.Level.Reset += Reset;
+
+        Events.Level.Undo += RemoveLastPointOnPath;
     }
     void OnDisable()
     {
         Events.Level.LoopComplete -= Reset;
         Events.Level.Reset -= Reset;
+
+        Events.Level.Undo -= RemoveLastPointOnPath;
     }
 
     public void AddTile(Vector3Int _tilePos)
@@ -52,7 +56,7 @@ public class PathManager : MonoBehaviour
             if (_tilePos == neighborTile)
             {
                 selectedTiles.Add(_tilePos);
-                levelManager.AddTileToPath(_tilePos);
+                // levelManager.AddTileToPath(_tilePos);
                 SpawnCounter(_tilePos, _point);
 
                 foreach (Vector3Int dir in neighboringTileDirections)
@@ -95,6 +99,18 @@ public class PathManager : MonoBehaviour
 
         PathCounter pathCounter = counterInstance.GetComponentInChildren<PathCounter>();
         pathCounter.UpdateText(selectedTiles.Count.ToString());
+    }
+
+    void RemoveLastPointOnPath()
+    {
+        // destroy arrow spawn counter & remove from counters list
+        Destroy(counters[^1].gameObject);
+        counters.Remove(counters[^1]);
+
+        // remove last point on path
+        selectedTiles.Remove(selectedTiles[^1]);
+
+        // play undo sfx
     }
 
     public List<Vector3Int> GetPath()

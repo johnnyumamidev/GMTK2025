@@ -27,20 +27,22 @@ public class HealthEvents
 
 public class LevelEvents
 {
-    public UnityAction PathDrawnIsClosedLoop;
-    public UnityAction PathDrawnIsOpen;
     public UnityAction GridGenerated;
     public UnityAction<List<Vector3Int>> ItemsGenerated;
+    public UnityAction<int> MissingPartsGenerated;
+
+    public UnityAction Undo;
     public UnityAction Reset;
+
+    public UnityAction PathDrawnIsClosedLoop;
+    public UnityAction PathDrawnIsOpen;
     public UnityAction StartLoop;
     public UnityAction StartMove;
     public UnityAction<Vector3Int> ReachedNextTile;
-    public UnityAction LoopComplete;
     public UnityAction CollectedItem;
-
     public UnityAction<MissingPart> CollectedMissingPart;
-    public UnityAction<int> MissingPartsGenerated;
     public UnityAction StartNight;
+    public UnityAction LoopComplete;
 
     public UnityAction<Vector3Int> NeighborDetected;
 }

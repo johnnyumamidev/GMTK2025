@@ -33,6 +33,10 @@ public class ItemSpawner : MonoBehaviour
     {
         // make goal collectibles spawn reasonably far away from start position 
         possibleSpawnPositions = new(levelManager.GetPlayableTiles());
+
+        //remove starting position
+        possibleSpawnPositions.Remove(levelManager.GetStartingTilePos());
+
         List<Vector3Int> tooCloseToStartSpawns = new();
         foreach (Vector3Int spawnPoint in possibleSpawnPositions)
         {

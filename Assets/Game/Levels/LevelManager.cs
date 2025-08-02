@@ -96,13 +96,13 @@ public class LevelManager : MonoBehaviour
     }
     #endregion
 
-    public void AddTileToPath(Vector3Int selectedTilePos)
-    {
-        if (worldTilemap.HasTile(selectedTilePos))
-        {
-            pathTilemap.SetTile(selectedTilePos, selectedTile);
-        }
-    }
+    // public void AddTileToPath(Vector3Int selectedTilePos)
+    // {
+    //     if (worldTilemap.HasTile(selectedTilePos))
+    //     {
+    //         pathTilemap.SetTile(selectedTilePos, selectedTile);
+    //     }
+    // }
     void RemoveTileFromPath(Vector3Int tileToRemove)
     {
         pathTilemap.SetTile(tileToRemove, null);

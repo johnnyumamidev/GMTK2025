@@ -9,7 +9,10 @@ public class SFXManager : MonoBehaviour
     public AudioClip enemyDieSFX;
     public AudioClip menuSFX;
     public AudioClip drawPathSFX;
+    public AudioClip undoSFX;
     public AudioClip cancelPathSFX;
+    public AudioClip buttonEnterSFX;
+    public AudioClip transitionSFX;
     void Awake()
     {
         instance = this;
@@ -38,5 +41,20 @@ public class SFXManager : MonoBehaviour
     public void CancelPathSFX()
     {
         sfxSource.PlayOneShot(cancelPathSFX);
+    }
+
+    public void PlayButtonEnterSFX()
+    {
+        sfxSource.PlayOneShot(buttonEnterSFX);
+    }
+
+    public void PlayTransitionSFX()
+    {
+        sfxSource.PlayOneShot(transitionSFX);
+    }
+
+    public void PlayUndoSFX()
+    {
+        sfxSource.PlayOneShot(undoSFX);
     }
 }

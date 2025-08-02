@@ -49,18 +49,7 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            SFXManager.instance.PlayMenuSFX();
-
-            if (currentGameState != GameState.GamePaused)
-            {
-                prevGameState = currentGameState;
-                ChangeGameState(GameState.GamePaused);
-            }
-            else
-            {
-                PauseMenu.SetActive(false);
-                ChangeGameState(prevGameState);
-            }
+            PauseGame();
         }
 
         if (currentGameState == GameState.DrawPathPhase)
@@ -68,17 +57,24 @@ public class GameManager : MonoBehaviour
             WinScreen.SetActive(false);
             LoseScreen.SetActive(false);
 
-            if (Input.GetKeyDown(KeyCode.Tab))
+            if (Input.GetKeyDown(KeyCode.Space))
             {
                 if (drawnPathIsClosed)
                     ChangeGameState(GameState.ExplorationPhase);
                 else
                     Debug.Log("path is not a closed loop yet!");
             }
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.R))
             {
                 SFXManager.instance.CancelPathSFX();
                 Events.Level.Reset?.Invoke();
+            }
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                //undo last path drawn
+                Events.Level.Undo?.Invoke();
+
+                SFXManager.instance.PlayUndoSFX();
             }
         }
 
@@ -161,6 +157,23 @@ public class GameManager : MonoBehaviour
     void LoseGame()
     {
         ChangeGameState(GameState.GameLoss);
+    }
+
+    public void PauseGame()
+    {
+        SFXManager.instance.PlayMenuSFX();
+
+        if (currentGameState != GameState.GamePaused)
+        {
+            prevGameState = currentGameState;
+            ChangeGameState(GameState.GamePaused);
+        }
+        else
+        {
+            PauseMenu.SetActive(false);
+            Time.timeScale = 1f;
+            ChangeGameState(prevGameState);
+        }
     }
 }
 

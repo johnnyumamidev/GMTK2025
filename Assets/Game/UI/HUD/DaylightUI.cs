@@ -15,7 +15,7 @@ public class DaylightUI : MonoBehaviour
         timeRemaining = time;
 
         if (time > 0)
-            timeDisplay.text = "Daylight Hours: " + time;
+            timeDisplay.text = "TIME TIL DUSK: " + time + ":00";
         else
         {
             timeDisplay.text = "NIGHT HAS FALLEN";
