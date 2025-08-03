@@ -36,7 +36,7 @@ public class HealthUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        hpMeter.fillAmount = (float)currentHealth / (float)maxHealth;
+        hpMeter.fillAmount = Mathf.Lerp(hpMeter.fillAmount, (float)currentHealth / (float)maxHealth, 3 * Time.deltaTime);
         // healthDisplay.text = "HP: " + currentHealth + "/" + maxHealth;
     }
 }

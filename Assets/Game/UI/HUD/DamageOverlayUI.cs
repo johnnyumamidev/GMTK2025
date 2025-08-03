@@ -18,8 +18,11 @@ public class DamageOverlayUI : MonoBehaviour
 
     void EnableFX()
     {
-        hurtScreenFX.SetActive(true);
-        Invoke("DisableFX", fxDuration);
+        if (hurtScreenFX != null)
+        {
+            hurtScreenFX.SetActive(true);
+            Invoke("DisableFX", fxDuration);
+        }
     }
     void DisableFX()
     {

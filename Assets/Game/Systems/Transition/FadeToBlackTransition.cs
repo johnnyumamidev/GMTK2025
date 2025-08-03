@@ -11,6 +11,8 @@ public class FadeToBlackTransition : MonoBehaviour
     [SerializeField] float speed;
     [SerializeField] float fadeLength;
     [SerializeField] float delayFadeOut;
+
+    [SerializeField] AudioSource music;
     void OnEnable()
     {
         blackBox.color = Color.clear;
@@ -29,6 +31,7 @@ public class FadeToBlackTransition : MonoBehaviour
         while (Time.time < startTime + fadeLength)
         {
             elapsedTime += Time.deltaTime;
+            music.volume = Mathf.Lerp(music.volume, 0f, Time.deltaTime);
             targetColor = new Color(0, 0, 0, elapsedTime / fadeLength);
             yield return new WaitForEndOfFrame();
         }

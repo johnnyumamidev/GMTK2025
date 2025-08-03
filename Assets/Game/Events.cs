@@ -28,8 +28,8 @@ public class HealthEvents
 public class LevelEvents
 {
     public UnityAction GridGenerated;
-    public UnityAction<List<Vector3Int>> ItemsGenerated;
     public UnityAction<int> MissingPartsGenerated;
+    public UnityAction<List<Vector3Int>> ItemsGenerated;
 
     public UnityAction Undo;
     public UnityAction Reset;

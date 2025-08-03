@@ -9,12 +9,14 @@ public class SFXPlayer : MonoBehaviour
     [SerializeField] AudioClip stepSFX;
     [SerializeField] AudioClip eatSFX;
     [SerializeField] AudioClip partFoundSFX;
+    [SerializeField] AudioClip hurtSFX;
 
     void OnEnable()
     {
         Events.Level.StartMove += PlayStepSFX;
 
         Events.Health.EatFood += PlayEatSFX;
+        Events.Health.LoseHealth += PlayHurtSFX;
         Events.Level.CollectedMissingPart += PlayPartFoundSFX;
     }
     private void OnDisable()
@@ -22,6 +24,7 @@ public class SFXPlayer : MonoBehaviour
         Events.Level.StartMove -= PlayStepSFX;
 
         Events.Health.EatFood -= PlayEatSFX;
+        Events.Health.LoseHealth -= PlayHurtSFX;
         Events.Level.CollectedMissingPart -= PlayPartFoundSFX;
     }
 
@@ -32,6 +35,10 @@ public class SFXPlayer : MonoBehaviour
     void PlayEatSFX(int i)
     {
         audio.PlayOneShot(eatSFX);
+    }
+    void PlayHurtSFX()
+    {
+        audio.PlayOneShot(hurtSFX);
     }
 
     void PlayPartFoundSFX(MissingPart _m)

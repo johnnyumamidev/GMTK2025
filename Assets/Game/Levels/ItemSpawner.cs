@@ -35,7 +35,10 @@ public class ItemSpawner : MonoBehaviour
         possibleSpawnPositions = new(levelManager.GetPlayableTiles());
 
         //remove starting position
-        possibleSpawnPositions.Remove(levelManager.GetStartingTilePos());
+        if (possibleSpawnPositions.Contains(levelManager.GetStartingTilePos()))
+        {
+            possibleSpawnPositions.Remove(levelManager.GetStartingTilePos());
+        }
 
         List<Vector3Int> tooCloseToStartSpawns = new();
         foreach (Vector3Int spawnPoint in possibleSpawnPositions)

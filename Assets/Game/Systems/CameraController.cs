@@ -23,8 +23,9 @@ public class CameraController : MonoBehaviour
     }
     void Update()
     {
+        worldVirtualCam.m_Lens.OrthographicSize = Mathf.Clamp(worldVirtualCam.m_Lens.OrthographicSize, 2, 20);
         //zoom in world cam using mouse wheel
-        if(worldCam.activeSelf)
+        if (worldCam.activeSelf)
             worldVirtualCam.m_Lens.OrthographicSize -= Input.mouseScrollDelta.y * zoomSpeed * Time.deltaTime;
     }
 
