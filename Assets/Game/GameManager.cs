@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] float gameSpeed = 2;
 
     public GoalUI goalUI;
+    public PhaseDisplayUI phaseUI;
 
     [SerializeField] GameObject WinScreen, LoseScreen, PauseMenu;
     void OnEnable()
@@ -60,9 +61,14 @@ public class GameManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 if (drawnPathIsClosed)
+                {
                     ChangeGameState(GameState.ExplorationPhase);
+                }
                 else
+                {
+                    phaseUI.DisplayError();
                     Debug.Log("path is not a closed loop yet!");
+                }
             }
             if (Input.GetKeyDown(KeyCode.R))
             {
@@ -80,6 +86,8 @@ public class GameManager : MonoBehaviour
 
         if (currentGameState == GameState.ExplorationPhase)
         {
+            phaseUI.UpdateText("Exploration");
+
             Time.timeScale = 1f;
             //hold space to speed up the game
             if (Input.GetKey(KeyCode.Space))
@@ -126,6 +134,7 @@ public class GameManager : MonoBehaviour
 
     void ExitExplorationState()
     {
+        phaseUI.UpdateText("Planning");
         ChangeGameState(GameState.DrawPathPhase);
     }
 
@@ -154,8 +163,11 @@ public class GameManager : MonoBehaviour
             ChangeGameState(GameState.GameWin);
         }
     }
-    void LoseGame()
+    void LoseGame(int i)
     {
+        GameOverScreen gameOverScreen = LoseScreen.GetComponent<GameOverScreen>();
+        gameOverScreen.causeOfDeath = i;
+
         ChangeGameState(GameState.GameLoss);
     }
 

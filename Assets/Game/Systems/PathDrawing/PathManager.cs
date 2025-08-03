@@ -111,6 +111,7 @@ public class PathManager : MonoBehaviour
         selectedTiles.Remove(selectedTiles[^1]);
 
         // play undo sfx
+        Events.Level.PathDrawnIsOpen?.Invoke();
     }
 
     public List<Vector3Int> GetPath()

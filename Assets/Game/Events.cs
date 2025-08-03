@@ -18,7 +18,7 @@ public class HealthEvents
     public UnityAction<int> HealthChanged;
     public UnityAction GainHealth;
     public UnityAction LoseHealth;
-    public UnityAction AllHealthLost;
+    public UnityAction<int> AllHealthLost;
 
     // Hunger
     public UnityAction<int> EatFood;

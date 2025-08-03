@@ -55,7 +55,7 @@ public class HealthComponent : MonoBehaviour
     {
         if (currentHealth <= 0)
         {
-            Events.Health.AllHealthLost?.Invoke();
+            Events.Health.AllHealthLost?.Invoke(1);
         }
         else
         {

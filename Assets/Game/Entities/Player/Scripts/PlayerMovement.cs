@@ -89,7 +89,7 @@ public class PlayerMovement : MonoBehaviour
     {
         pathIndex = 0;
     }
-    void StopMovement()
+    void StopMovement(int i)
     {
         isReady = false;
     }
