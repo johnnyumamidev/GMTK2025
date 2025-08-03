@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 
 public class LevelManager : MonoBehaviour
 {
-    [SerializeField] TileBase baseTile;
+    [SerializeField] List<TileBase> baseTiles;
     [SerializeField] TileBase selectedTile;
     [SerializeField] TileBase fogTile;
     [SerializeField] Tilemap worldTilemap;
@@ -58,6 +58,9 @@ public class LevelManager : MonoBehaviour
             for (int y = 0; y < levelHeight; y++)
             {
                 Vector3Int currentTile = levelGenStartTilePos + new Vector3Int(x, y, 0);
+
+                TileBase baseTile = baseTiles[Random.Range(0, baseTiles.Count)];
+                
                 worldTilemap.SetTile(currentTile, baseTile);
                 fogTilemap.SetTile(currentTile, fogTile);
 
@@ -80,7 +83,9 @@ public class LevelManager : MonoBehaviour
     #region Get Variable Functions
     public List<Vector3Int> GetPlayableTiles()
     {
-        return playableTiles;
+        List<Vector3Int> tiles = new(playableTiles);
+        tiles.Remove(playerStartTilePos);
+        return tiles;
     }
     public Vector3Int GetStartingTilePos()
     {

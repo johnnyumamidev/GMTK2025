@@ -18,6 +18,7 @@ public class Enemy : MonoBehaviour
 
     GameObject player;
 
+    [SerializeField] Animator animator;
     [SerializeField] SFXEnemy enemySFX;
     void OnEnable()
     {
@@ -62,6 +63,7 @@ public class Enemy : MonoBehaviour
                 if (isAgressive && !hasAttacked)
                 {
                     Debug.Log("hit target");
+                    animator.CrossFade("Attack", 0, 0);
                     Events.Health.UpdateHealth?.Invoke(-damage);
                     hasAttacked = true;
                 }
@@ -101,6 +103,8 @@ public class Enemy : MonoBehaviour
                 transform.position += (Vector3)assignedDir;
 
                 enemySFX.PlayStepSFX();
+
+                animator.CrossFade("Run", 0, 0);
                 break;
             }
         }
@@ -113,8 +117,9 @@ public class Enemy : MonoBehaviour
 
         if (LevelManager.instance.GetWorldTilemap().HasTile(targetTile))
             transform.position += (Vector3)dir;
-            
+
         enemySFX.PlayStepSFX();
+        animator.CrossFade("Run", 0, 0);
     }
 
     void OnDrawGizmos()

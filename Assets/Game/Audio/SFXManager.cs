@@ -13,6 +13,7 @@ public class SFXManager : MonoBehaviour
     public AudioClip cancelPathSFX;
     public AudioClip buttonEnterSFX;
     public AudioClip transitionSFX;
+    public AudioClip nightfallSFX;
     void Awake()
     {
         instance = this;
@@ -20,10 +21,12 @@ public class SFXManager : MonoBehaviour
     private void OnEnable()
     {
         Events.Combat.EnemyHit += PlayEnemyDieSFX;
+        Events.Level.StartNight += PlayNightFallSFX;
     }
     private void OnDisable()
     {
         Events.Combat.EnemyHit -= PlayEnemyDieSFX;
+        Events.Level.StartNight -= PlayNightFallSFX;
     }
 
     public void PlayEnemyDieSFX()
@@ -56,5 +59,10 @@ public class SFXManager : MonoBehaviour
     public void PlayUndoSFX()
     {
         sfxSource.PlayOneShot(undoSFX);
+    }
+    
+    public void PlayNightFallSFX()
+    {
+        sfxSource.PlayOneShot(nightfallSFX);
     }
 }

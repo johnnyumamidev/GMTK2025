@@ -74,6 +74,8 @@ public class GameManager : MonoBehaviour
             {
                 SFXManager.instance.CancelPathSFX();
                 Events.Level.Reset?.Invoke();
+
+                SetPathIsClosedToFalse();
             }
             if (Input.GetKeyDown(KeyCode.Z))
             {

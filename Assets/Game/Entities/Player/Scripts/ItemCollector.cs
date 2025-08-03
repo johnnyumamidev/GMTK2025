@@ -6,14 +6,21 @@ public class ItemCollector : MonoBehaviour
 {
     bool canCollectItems = false;
     private void OnEnable() {
-        Events.Level.MissingPartsGenerated += EnableCollection;
+        Events.Level.StartLoop += EnableCollection;
+        Events.Level.LoopComplete += DisableCollection;
     }
     private void OnDisable() {
-        Events.Level.MissingPartsGenerated -= EnableCollection;
+        Events.Level.StartLoop -= EnableCollection;
+        Events.Level.LoopComplete -= DisableCollection;
+
     }
-    void EnableCollection(int i)
+    void EnableCollection()
     {
         canCollectItems = true;
+    }
+    void DisableCollection()
+    {
+        canCollectItems = false;
     }
     void OnCollisionEnter2D(Collision2D other)
     {

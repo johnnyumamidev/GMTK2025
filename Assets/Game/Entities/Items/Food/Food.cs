@@ -5,7 +5,8 @@ using UnityEngine;
 public class Food : MonoBehaviour
 {
     public int hungerValue;
-    int daysUntilSpoiled = 3;
+    public Transform splatterFX;
+    int daysUntilSpoiled = 2;
     int daysSinceSpawn = 0;
     void OnEnable()
     {
@@ -16,9 +17,10 @@ public class Food : MonoBehaviour
     }
     public void Eat()
     {
+        Transform splat = Instantiate(splatterFX, transform.position, Quaternion.identity);
+        splatterFX.gameObject.SetActive(true); 
         Events.Health.EatFood?.Invoke(hungerValue);
     }
-
 
     void AddToSpoilCounter()
     {
@@ -26,6 +28,8 @@ public class Food : MonoBehaviour
 
         if (daysSinceSpawn >= daysUntilSpoiled)
         {
+            Transform splat = Instantiate(splatterFX, transform.position, Quaternion.identity);
+            splatterFX.gameObject.SetActive(true); 
             Destroy(gameObject);
         }
     }

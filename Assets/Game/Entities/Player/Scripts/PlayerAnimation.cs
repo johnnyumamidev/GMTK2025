@@ -4,15 +4,25 @@ using UnityEngine;
 
 public class PlayerAnimation : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] Animator animator;
+    private void OnEnable()
     {
-        
+        Events.Level.StartLoop += PlayRun;
+        Events.Level.LoopComplete += PlayIdle;
+    }
+    private void OnDisable()
+    {
+        Events.Level.StartLoop -= PlayRun;
+        Events.Level.LoopComplete -=PlayIdle;
     }
 
-    // Update is called once per frame
-    void Update()
+    void PlayIdle()
     {
-        
+        animator.CrossFade("Idle", 0, 0);
+    }
+
+    void PlayRun()
+    {
+        animator.CrossFade("Run", 0, 0);
     }
 }

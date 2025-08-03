@@ -11,7 +11,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] int minDistanceFromStartTile = 0;
 
     int daysSinceEnemySpawn = 0;
-    int minDaysBetweenSpawn = 2;
+    int minDaysBetweenSpawn = 1;
      void OnEnable()
     {
         daysSinceEnemySpawn = minDaysBetweenSpawn;

@@ -34,13 +34,8 @@ public class ItemSpawner : MonoBehaviour
         // make goal collectibles spawn reasonably far away from start position 
         possibleSpawnPositions = new(levelManager.GetPlayableTiles());
 
-        //remove starting position
-        if (possibleSpawnPositions.Contains(levelManager.GetStartingTilePos()))
-        {
-            possibleSpawnPositions.Remove(levelManager.GetStartingTilePos());
-        }
-
         List<Vector3Int> tooCloseToStartSpawns = new();
+
         foreach (Vector3Int spawnPoint in possibleSpawnPositions)
         {
             if (Vector3Int.Distance(spawnPoint, levelManager.GetStartingTilePos()) < minDistanceFromStartTile)
@@ -65,10 +60,13 @@ public class ItemSpawner : MonoBehaviour
             possibleSpawnPositions.Remove(randomSpawnPos);
         }
         
-        // re-add close spawn points
+        // re-add half of the nearby spawn points
         foreach (Vector3Int spawnPoint in tooCloseToStartSpawns)
         {
-            possibleSpawnPositions.Add(spawnPoint);
+            if (Vector3Int.Distance(spawnPoint, levelManager.GetStartingTilePos()) > minDistanceFromStartTile / 2)
+            {
+                possibleSpawnPositions.Add(spawnPoint);
+            }
         }
 
         SpawnFoodItems();
