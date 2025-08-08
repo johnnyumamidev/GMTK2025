@@ -673,6 +673,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: ShakeObject, Assembly-CSharp
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   sfxSource: {fileID: 5908894941879293537}
   cannonSFX: {fileID: 8300000, guid: 8013d617bd51d8048a8703937d547cf0, type: 3}
   doorSFX: {fileID: 8300000, guid: dae98dcaf89aab34c9ac416fab3134b3, type: 3}

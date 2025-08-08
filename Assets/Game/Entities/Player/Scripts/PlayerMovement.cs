@@ -12,7 +12,7 @@ public class PlayerMovement : MonoBehaviour
     int pathIndex = 0;
     public bool isReady = false;
     Vector3Int positionAtStartOfLoop;
-    Vector3 targetPosition;
+    Vector2 targetPosition;
     [SerializeField] Transform collisionDetector;
 
     void OnEnable()
@@ -52,10 +52,10 @@ public class PlayerMovement : MonoBehaviour
             return;
 
         targetPosition = levelManager.GetWorldTilemap().CellToWorld(path[pathIndex]);
-        Vector3 offset = Vector3.one * 0.5f;
+        Vector2 offset = Vector2.one * 0.5f;
         targetPosition += offset;
 
-        if (isReady && Vector3.Distance(transform.position, targetPosition) < distanceToTargetThreshold)
+        if (isReady && Vector2.Distance(transform.position, targetPosition) < distanceToTargetThreshold)
         {
             transform.position = targetPosition;
             isReady = false;
@@ -65,14 +65,15 @@ public class PlayerMovement : MonoBehaviour
             if (pathIndex < path.Count - 1)
             {
                 pathIndex++;
+                Debug.Log("next tile");
                 Invoke("ReadyNextMove", delayBetweenMoves);
             }
             else
                 Events.Level.LoopComplete?.Invoke();
         }
 
-        Vector2 dir = targetPosition - transform.position;
-        transform.Translate(dir * speed * Time.deltaTime);  
+        Vector2 dir = targetPosition - (Vector2)transform.position;
+        transform.Translate(dir * speed * Time.deltaTime);
     }
 
     void ReadyNextMove()

@@ -74,7 +74,7 @@ public class LevelManager : MonoBehaviour
         playerStartTilePos = centerTile;
 
         // spawn home base gameobject 
-        Instantiate(homeBase, player.position, Quaternion.identity);
+        homeBase = Instantiate(homeBase, player.position, Quaternion.identity);
 
         // invoke event to start spawning other units
         Events.Level.GridGenerated?.Invoke();

@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
 
     public GoalUI goalUI;
     public PhaseDisplayUI phaseUI;
+    public Teleporter teleporter;
 
     [SerializeField] GameObject WinScreen, LoseScreen, PauseMenu;
     void OnEnable()
@@ -58,6 +59,18 @@ public class GameManager : MonoBehaviour
             WinScreen.SetActive(false);
             LoseScreen.SetActive(false);
 
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                if (!teleporter.teleporterActive)
+                {
+                    teleporter.ActivateTeleportMode();
+                    Events.Level.Reset?.Invoke();
+                }
+                else
+                {
+                    teleporter.DeactivateTeleportMode();
+                }
+            }
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 if (drawnPathIsClosed)
@@ -72,7 +85,7 @@ public class GameManager : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.R))
             {
-                SFXManager.instance.CancelPathSFX();
+                SFXManager.instance.PlayUndoSFX();
                 Events.Level.Reset?.Invoke();
 
                 SetPathIsClosedToFalse();

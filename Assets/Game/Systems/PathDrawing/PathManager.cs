@@ -6,6 +6,7 @@ using TMPro;
 public class PathManager : MonoBehaviour
 {
     LevelManager levelManager;
+    [SerializeField] Transform player;
     [SerializeField] List<Vector3Int> selectedTiles = new();
     List<Vector3Int> neighboringTileDirections = new List<Vector3Int> {
         new Vector3Int(0, 1, 0),
@@ -15,7 +16,7 @@ public class PathManager : MonoBehaviour
     };
     [SerializeField] Transform counterPrefab;
     List<Transform> counters = new();
-
+    Vector3Int startPos;
     void OnEnable()
     {
         levelManager = FindObjectOfType<LevelManager>();
@@ -35,12 +36,15 @@ public class PathManager : MonoBehaviour
 
     public void AddTile(Vector3Int _tilePos)
     {
-        if (selectedTiles.Contains(_tilePos) || !levelManager.GetPlayableTiles().Contains(_tilePos) || _tilePos == levelManager.GetStartingTilePos())
+        Debug.Log("tile");
+        startPos = levelManager.GetWorldTilemap().WorldToCell(player.position);
+
+        if (selectedTiles.Contains(_tilePos) || !levelManager.GetPlayableTiles().Contains(_tilePos) || _tilePos == startPos)
             return;
 
         if (selectedTiles.Count == 0)
         {
-            CheckForNeighboringTiles(_tilePos, levelManager.GetStartingTilePos());
+            CheckForNeighboringTiles(_tilePos, startPos);
         }
         else
         {
@@ -59,9 +63,11 @@ public class PathManager : MonoBehaviour
                 // levelManager.AddTileToPath(_tilePos);
                 SpawnCounter(_tilePos, _point);
 
+                SFXManager.instance.PlayPathDrawSFX();
+                    
                 foreach (Vector3Int dir in neighboringTileDirections)
                 {
-                    Vector3Int neighbor = levelManager.GetStartingTilePos() + dir;
+                    Vector3Int neighbor = startPos + dir;
                     if (neighbor == _tilePos)
                     {
                         // loop is closed!
@@ -73,8 +79,6 @@ public class PathManager : MonoBehaviour
                         Events.Level.PathDrawnIsOpen?.Invoke();
                     }
                 }
-
-                SFXManager.instance.PlayPathDrawSFX();
 
                 break;
             }
@@ -104,8 +108,11 @@ public class PathManager : MonoBehaviour
     void RemoveLastPointOnPath()
     {
         // destroy arrow spawn counter & remove from counters list
-        Destroy(counters[^1].gameObject);
-        counters.Remove(counters[^1]);
+        if (counters.Count > 0)
+        {
+            Destroy(counters[^1].gameObject);
+            counters.Remove(counters[^1]);
+        }
 
         // remove last point on path
         selectedTiles.Remove(selectedTiles[^1]);

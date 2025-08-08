@@ -33,7 +33,7 @@ public class HungerManager : MonoBehaviour
 
         if (currentHunger <= 0)
         {
-            Events.Health.AllHealthLost?.Invoke(0);
+            Events.Health.UpdateHealth(-1);
         }
         else
             Events.Health.HungerChanged?.Invoke(currentHunger, startingHunger);

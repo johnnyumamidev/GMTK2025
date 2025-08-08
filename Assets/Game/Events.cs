@@ -23,6 +23,10 @@ public class HealthEvents
     // Hunger
     public UnityAction<int> EatFood;
     public UnityAction<float, float> HungerChanged;
+
+    // Teleporter Charge
+    public UnityAction<int> GainCharge;
+    public UnityAction<int> ChargesChanged;
 }
 
 public class LevelEvents
@@ -33,6 +37,10 @@ public class LevelEvents
 
     public UnityAction Undo;
     public UnityAction Reset;
+    public UnityAction NotEnoughCharges;
+    public UnityAction TeleportMode;
+    public UnityAction EndTeleportMode;
+    public UnityAction InitiateTeleport;
 
     public UnityAction PathDrawnIsClosedLoop;
     public UnityAction PathDrawnIsOpen;

@@ -8,8 +8,10 @@ public class ItemSpawner : MonoBehaviour
 
     [SerializeField] Transform goalItem;
     [SerializeField] Transform foodPrefab;
+    [SerializeField] Transform crystalPrefab;
     [SerializeField] int goalItemSpawnCount = 0;
     [SerializeField] int foodSpawnCount = 0;
+    [SerializeField] int crystalSpawnCount = 0;
     [SerializeField] int minDistanceFromStartTile = 4;
     List<Vector3Int> possibleSpawnPositions;
     void OnEnable()
@@ -43,6 +45,8 @@ public class ItemSpawner : MonoBehaviour
                 tooCloseToStartSpawns.Add(spawnPoint);
             }
         }
+
+        
         foreach (Vector3Int spawnPoint in tooCloseToStartSpawns)
         {
             possibleSpawnPositions.Remove(spawnPoint);
@@ -82,6 +86,17 @@ public class ItemSpawner : MonoBehaviour
             worldPos += Vector3.one * 0.5f;
             
             Instantiate(foodPrefab, worldPos, Quaternion.identity);
+            
+            possibleSpawnPositions.Remove(randomSpawnPos);
+        }
+
+        for (int i = 0; i < crystalSpawnCount; i++)
+        {
+            Vector3Int randomSpawnPos = possibleSpawnPositions[Random.Range(0, possibleSpawnPositions.Count - 1)];
+            Vector3 worldPos = levelManager.GetWorldTilemap().CellToWorld(randomSpawnPos);
+            worldPos += Vector3.one * 0.5f;
+
+            Instantiate(crystalPrefab, worldPos, Quaternion.identity);
             
             possibleSpawnPositions.Remove(randomSpawnPos);
         }

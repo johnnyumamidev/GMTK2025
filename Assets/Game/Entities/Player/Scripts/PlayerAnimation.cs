@@ -9,11 +9,15 @@ public class PlayerAnimation : MonoBehaviour
     {
         Events.Level.StartLoop += PlayRun;
         Events.Level.LoopComplete += PlayIdle;
+
+        Events.Level.InitiateTeleport += PlayTeleport;
     }
     private void OnDisable()
     {
         Events.Level.StartLoop -= PlayRun;
-        Events.Level.LoopComplete -=PlayIdle;
+        Events.Level.LoopComplete -= PlayIdle;
+
+        Events.Level.InitiateTeleport -= PlayTeleport;
     }
 
     void PlayIdle()
@@ -24,5 +28,10 @@ public class PlayerAnimation : MonoBehaviour
     void PlayRun()
     {
         animator.CrossFade("Run", 0, 0);
+    }
+
+    void PlayTeleport()
+    {
+        animator.CrossFade("Teleport", 0, 0);
     }
 }
