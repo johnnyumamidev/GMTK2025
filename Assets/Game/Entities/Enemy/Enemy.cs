@@ -17,9 +17,13 @@ public class Enemy : MonoBehaviour
     bool isAgressive = false;
 
     GameObject player;
+    [SerializeField] float moveSpeed;
+    [SerializeField] GameObject sleepyParticles;
 
     [SerializeField] Animator animator;
     [SerializeField] SFXEnemy enemySFX;
+    public Transform splatterFX;
+    Vector3 targetPosition;
     void OnEnable()
     {
         Events.Level.StartNight += EnableAggression;
@@ -38,6 +42,7 @@ public class Enemy : MonoBehaviour
     }
     void Start()
     {
+        targetPosition = transform.position;
         // store player variable for when ready to chase
         player = GameObject.FindWithTag("Player");
     }
@@ -49,28 +54,27 @@ public class Enemy : MonoBehaviour
         {
             Destroy(food.gameObject);
         }
-        
-        if (!isAgressive)
-                return;
-            
-        //check for player
-        foreach (Vector2 dir in directions)
-        {
-            Collider2D checkForPlayer = Physics2D.OverlapCircle((Vector2)transform.position + dir, 0.25f);
 
-            if (checkForPlayer && checkForPlayer.gameObject.CompareTag("Player"))
-            {
-                if (isAgressive && !hasAttacked)
-                {
-                    Debug.Log("hit target");
-                    animator.CrossFade("Attack", 0, 0);
-                    Events.Health.UpdateHealth?.Invoke(-damage);
-                    hasAttacked = true;
-                }
-            }
+        sleepyParticles.SetActive(!isAgressive);
+
+        if (!isAgressive)
+        {
+            animator.CrossFade("Sleep", 0, 0);
+            return;
         }
+
+        transform.position = Vector3.Lerp(transform.position, targetPosition, moveSpeed * Time.deltaTime);
     }
 
+
+    public void Die()
+    {
+        //spawn splatter visual
+        Transform splatter = Instantiate(splatterFX, transform.position, Quaternion.identity);
+        splatter.gameObject.SetActive(true);
+
+        Destroy(gameObject);
+    }
     void EnableAggression()
     {
         isAgressive = true;
@@ -83,14 +87,14 @@ public class Enemy : MonoBehaviour
     {
         if (!isAgressive)
             return;
-            
+
         hasAttacked = false;
 
         // calculate direction to player
         Vector2 dirToPlayer = player.transform.position - transform.position;
         Vector2 assignedDir;
         // loop through each direction vector
-        for(int i = 0; i < directions.Count; i++)
+        for (int i = 0; i < directions.Count; i++)
         {
             Vector2 dir = directions[i];
             float distance = Vector2.Distance(dir, dirToPlayer.normalized);
@@ -100,12 +104,29 @@ public class Enemy : MonoBehaviour
                 assignedDir = dir;
 
                 // move in that direction
-                transform.position += (Vector3)assignedDir;
+                targetPosition += (Vector3)assignedDir;
 
                 enemySFX.PlayStepSFX();
 
                 animator.CrossFade("Run", 0, 0);
                 break;
+            }
+        }
+        
+        //check for player
+        foreach (Vector2 dir in directions)
+        {
+            Collider2D checkForPlayer = Physics2D.OverlapCircle((Vector2)transform.position + dir, 0.25f);
+
+            if (checkForPlayer && checkForPlayer.gameObject.CompareTag("Player"))
+            {
+                if (!hasAttacked)
+                {
+                    Debug.Log("hit target");
+                    animator.CrossFade("Attack", 0, 0);
+                    Events.Health.UpdateHealth?.Invoke(-damage);
+                    hasAttacked = true;
+                }
             }
         }
     }
@@ -116,12 +137,15 @@ public class Enemy : MonoBehaviour
         Vector3Int targetTile = LevelManager.instance.GetWorldTilemap().WorldToCell((Vector2)transform.position + dir);
 
         if (LevelManager.instance.GetWorldTilemap().HasTile(targetTile))
-            transform.position += (Vector3)dir;
+            targetPosition += (Vector3)dir;
 
         enemySFX.PlayStepSFX();
         animator.CrossFade("Run", 0, 0);
     }
-
+    public bool IsAgressive()
+    {
+        return isAgressive;
+    }
     void OnDrawGizmos()
     {
         if (isAgressive && !hasAttacked)

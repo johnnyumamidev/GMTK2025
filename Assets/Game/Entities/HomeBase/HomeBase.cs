@@ -8,11 +8,8 @@ public class HomeBase : MonoBehaviour
     [SerializeField] Transform projectilePrefab;
     [SerializeField] Transform cannon;
     Vector2 cannonDir;
-    [SerializeField] float cannonRotSpeed = 5f;
     [SerializeField] Transform projectileSpawnPoint;
     bool projectileReady = true;
-    [SerializeField] SpriteRenderer walls;
-    [SerializeField] Sprite wallsUpSprite, wallsDownSprite;
 
     public UnityEvent ProjectileFired;
 
@@ -23,17 +20,11 @@ public class HomeBase : MonoBehaviour
     {
         Events.Combat.EnemyHit += ReadyProjectile;
         Events.Level.StartMove += ReadyProjectile;
-
-        Events.Level.StartLoop += WallsDown;
-        Events.Level.LoopComplete += WallsUp;
     }
     private void OnDisable()
     {
         Events.Combat.EnemyHit -= ReadyProjectile;
         Events.Level.StartMove -= ReadyProjectile;
-        
-        Events.Level.StartLoop -= WallsDown;
-        Events.Level.LoopComplete -= WallsUp;
     }
     void Update()
     {
@@ -67,18 +58,4 @@ public class HomeBase : MonoBehaviour
         projectileReady = true;
     }
 
-    void WallsDown()
-    {
-        walls.sprite = wallsDownSprite;
-        cannon.gameObject.SetActive(true);
-
-        sfxSource.PlayOneShot(doorSFX);
-    }
-    void WallsUp()
-    {
-        walls.sprite = wallsUpSprite;
-        cannon.gameObject.SetActive(false);
-
-        sfxSource.PlayOneShot(doorSFX);
-    }
 }

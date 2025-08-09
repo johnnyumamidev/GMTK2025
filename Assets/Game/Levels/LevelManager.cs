@@ -99,6 +99,11 @@ public class LevelManager : MonoBehaviour
     {
         return fogTilemap;
     }
+    public Vector2 GetDistanceToEdgeOfLevel()
+    {
+        Vector2 distanceToEdge = new Vector2(levelWidth / 2, levelHeight / 2);
+        return distanceToEdge;
+    }
     #endregion
 
     // public void AddTileToPath(Vector3Int selectedTilePos)

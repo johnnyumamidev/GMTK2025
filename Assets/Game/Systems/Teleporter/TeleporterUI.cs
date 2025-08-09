@@ -28,11 +28,6 @@ public class TeleporterUI : MonoBehaviour
     void Start()
     {
         highlightColor = highlight.color;
-
-        for (int i = 0; i < charges.Length; i++)
-        {
-            charges[i].color = Color.red;
-        }
     }
     void UpdateCharges(int _chargeAmt)
     {

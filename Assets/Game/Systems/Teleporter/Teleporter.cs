@@ -9,6 +9,8 @@ public class Teleporter : MonoBehaviour
     [SerializeField] Transform portalPrefab;
     List<Transform> portalInstances = new();
     [SerializeField] GameObject teleportVisual;
+    [SerializeField] Transform arrows;
+    SpriteRenderer arrowsSprite;
     [SerializeField] int charges = 0;
     int maxCharges = 3;
 
@@ -33,12 +35,26 @@ public class Teleporter : MonoBehaviour
 
         Events.Level.LoopComplete -= ReturnPlayerHome;
     }
+    void Awake()
+    {
+        arrowsSprite = arrows.gameObject.GetComponentInChildren<SpriteRenderer>();
+    }
     void Start()
     {
+        charges = maxCharges - 1;
         Events.Health.ChargesChanged?.Invoke(charges);
     }
     private void Update()
     {
+
+        // put below return after testing
+        Vector2 dirToPlayer = transform.position - _player.position;
+        Quaternion targetRotation = Quaternion.LookRotation(arrows.forward, dirToPlayer);
+        arrows.rotation = targetRotation;
+
+        float distanceFromPlayer = Vector2.Distance(transform.position, _player.position);
+        arrowsSprite.size = new Vector2(1, distanceFromPlayer - 1);
+
         if (!teleporterActive)
             return;
 
@@ -112,6 +128,7 @@ public class Teleporter : MonoBehaviour
             {
                 Destroy(portalInstance.gameObject);
             }
+            portalInstances.Clear();
             _player.position = new Vector2(8, 8);
             Events.Level.InitiateTeleport?.Invoke();
             hasBeenTeleported = false;

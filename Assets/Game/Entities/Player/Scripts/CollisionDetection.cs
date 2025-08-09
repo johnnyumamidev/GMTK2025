@@ -12,9 +12,10 @@ public class CollisionDetection : MonoBehaviour
         //     item.Collect();
         // }
 
-        // if (other.transform.TryGetComponent(out Enemy enemy))
-        // {
-        //     Destroy(other.gameObject);
-        // }
+        if (other.transform.TryGetComponent(out Enemy enemy))
+        {
+            if (!enemy.IsAgressive())
+                enemy.Die();
+        }
     }
 }

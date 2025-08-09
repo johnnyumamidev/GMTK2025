@@ -18,7 +18,7 @@ public class Food : MonoBehaviour
     public void Eat()
     {
         Transform splat = Instantiate(splatterFX, transform.position, Quaternion.identity);
-        splatterFX.gameObject.SetActive(true); 
+        splat.gameObject.SetActive(true); 
         Events.Health.EatFood?.Invoke(hungerValue);
     }
 
@@ -29,7 +29,7 @@ public class Food : MonoBehaviour
         if (daysSinceSpawn >= daysUntilSpoiled)
         {
             Transform splat = Instantiate(splatterFX, transform.position, Quaternion.identity);
-            splatterFX.gameObject.SetActive(true); 
+            splat.gameObject.SetActive(true); 
             Destroy(gameObject);
         }
     }

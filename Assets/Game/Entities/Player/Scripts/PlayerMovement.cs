@@ -15,6 +15,8 @@ public class PlayerMovement : MonoBehaviour
     Vector2 targetPosition;
     [SerializeField] Transform collisionDetector;
 
+    bool isFacingRight = true;
+
     void OnEnable()
     {
         Events.Level.StartLoop += ReadyNextMove;
@@ -73,6 +75,14 @@ public class PlayerMovement : MonoBehaviour
         }
 
         Vector2 dir = targetPosition - (Vector2)transform.position;
+
+        if (dir.x < 0 && isFacingRight || dir.x > 0 && !isFacingRight)
+        {
+            isFacingRight = !isFacingRight;
+            Vector3 scaler = transform.localScale;
+            scaler.x *= -1;
+            transform.localScale = scaler;
+        }
         transform.Translate(dir * speed * Time.deltaTime);
     }
 

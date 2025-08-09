@@ -19,12 +19,16 @@ public class ItemSpawner : MonoBehaviour
         Events.Level.GridGenerated += SpawnGoalItems;
 
         Events.Level.LoopComplete += SpawnFoodItems;
+
+        Events.Level.CollectedItem += UpdateSpawnPoints;
     }
     void OnDisable()
     {
         Events.Level.GridGenerated -= SpawnGoalItems;
 
         Events.Level.LoopComplete -= SpawnFoodItems;
+
+        Events.Level.CollectedItem -= UpdateSpawnPoints;
     }
     void Start()
     {
@@ -46,7 +50,6 @@ public class ItemSpawner : MonoBehaviour
             }
         }
 
-        
         foreach (Vector3Int spawnPoint in tooCloseToStartSpawns)
         {
             possibleSpawnPositions.Remove(spawnPoint);
@@ -63,14 +66,10 @@ public class ItemSpawner : MonoBehaviour
 
             possibleSpawnPositions.Remove(randomSpawnPos);
         }
-        
-        // re-add half of the nearby spawn points
+
         foreach (Vector3Int spawnPoint in tooCloseToStartSpawns)
         {
-            if (Vector3Int.Distance(spawnPoint, levelManager.GetStartingTilePos()) > minDistanceFromStartTile / 2)
-            {
-                possibleSpawnPositions.Add(spawnPoint);
-            }
+            possibleSpawnPositions.Add(spawnPoint);
         }
 
         SpawnFoodItems();
@@ -84,23 +83,45 @@ public class ItemSpawner : MonoBehaviour
             Vector3Int randomSpawnPos = possibleSpawnPositions[Random.Range(0, possibleSpawnPositions.Count - 1)];
             Vector3 worldPos = levelManager.GetWorldTilemap().CellToWorld(randomSpawnPos);
             worldPos += Vector3.one * 0.5f;
-            
+
             Instantiate(foodPrefab, worldPos, Quaternion.identity);
-            
+
             possibleSpawnPositions.Remove(randomSpawnPos);
+        }
+
+        //spawn crystals closer to player
+        List<Vector3Int> closeToBaseSpawns = new();
+        float offset = 2;
+        float maxDistanceFromBase = LevelManager.instance.GetDistanceToEdgeOfLevel().y;
+        maxDistanceFromBase -= offset;
+
+        foreach (Vector3Int spawnPoint in possibleSpawnPositions)
+        {
+            if (Vector3Int.Distance(spawnPoint, levelManager.GetStartingTilePos()) < maxDistanceFromBase)
+            {
+                closeToBaseSpawns.Add(spawnPoint);
+            }
         }
 
         for (int i = 0; i < crystalSpawnCount; i++)
         {
-            Vector3Int randomSpawnPos = possibleSpawnPositions[Random.Range(0, possibleSpawnPositions.Count - 1)];
+            Vector3Int randomSpawnPos = closeToBaseSpawns[Random.Range(0, closeToBaseSpawns.Count - 1)];
             Vector3 worldPos = levelManager.GetWorldTilemap().CellToWorld(randomSpawnPos);
             worldPos += Vector3.one * 0.5f;
 
             Instantiate(crystalPrefab, worldPos, Quaternion.identity);
-            
+
+            closeToBaseSpawns.Remove(randomSpawnPos);
             possibleSpawnPositions.Remove(randomSpawnPos);
         }
 
         Events.Level.ItemsGenerated(possibleSpawnPositions);
+    }
+
+    void UpdateSpawnPoints(Vector2 collectionPos)
+    {
+        Vector3Int tilePos = LevelManager.instance.GetWorldTilemap().WorldToCell(collectionPos);
+
+        possibleSpawnPositions.Add(tilePos);
     }
 }
