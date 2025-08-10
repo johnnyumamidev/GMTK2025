@@ -6,15 +6,19 @@ public class HealthComponent : MonoBehaviour
 {
     [SerializeField] int maxHealth, currentHealth;
     [SerializeField] int repairAmt = 5;
+
+    float currentHunger;
     void OnEnable()
     {
         Events.Health.UpdateHealth += UpdateHealth;
+        Events.Health.HungerChanged += UpdateHunger;
 
         Events.Level.LoopComplete += Repair;
     }
     void OnDisable()
     {
         Events.Health.UpdateHealth -= UpdateHealth;
+        Events.Health.HungerChanged -= UpdateHunger;
 
         Events.Level.LoopComplete -= Repair;
     }
@@ -55,11 +59,22 @@ public class HealthComponent : MonoBehaviour
     {
         if (currentHealth <= 0)
         {
-            Events.Health.AllHealthLost?.Invoke(1);
+            //current hunger > 0
+            if (currentHunger <= 0)
+            {
+                Events.Health.AllHealthLost?.Invoke(0);
+            }
+            else
+                Events.Health.AllHealthLost?.Invoke(1);
         }
         else
         {
             Events.Health.LoseHealth?.Invoke();
         }
+    }
+
+    void UpdateHunger(float cur, float max)
+    {
+        currentHunger = cur;
     }
 }

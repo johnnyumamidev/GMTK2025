@@ -12,12 +12,12 @@ public class GameOverScreen : MonoBehaviour
         if (causeOfDeath == 0)
         {
             //died from hunger
-            causeOfDeathDisplay.text = "You Starved To Death...";
+            causeOfDeathDisplay.text = "You were overcome by hunger...";
         }
         else
         {
             //died from damage
-            causeOfDeathDisplay.text = "You Bled To Death...";
+            causeOfDeathDisplay.text = "You were eaten by Aliens...";
         }
     }
 }

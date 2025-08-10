@@ -10,12 +10,8 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] int enemySpawnCount = 0;
     [SerializeField] int minDistanceFromStartTile = 0;
 
-    int daysSinceEnemySpawn = 0;
-    int minDaysBetweenSpawn = 1;
      void OnEnable()
     {
-        daysSinceEnemySpawn = minDaysBetweenSpawn;
-        
         Events.Level.ItemsGenerated += SpawnEnemies;
     }
     void OnDisable()
@@ -25,12 +21,6 @@ public class EnemySpawner : MonoBehaviour
 
     void SpawnEnemies(List<Vector3Int> possibleSpawnPositions)
     {
-        if (daysSinceEnemySpawn <= minDaysBetweenSpawn)
-        {
-            daysSinceEnemySpawn++;
-            return;
-        }
-
         List<Vector3Int> validSpawnPoints = new(possibleSpawnPositions);
         List<Vector3Int> tooCloseToStartSpawns = new();
         foreach (Vector3Int spawnPoint in possibleSpawnPositions)
@@ -55,8 +45,5 @@ public class EnemySpawner : MonoBehaviour
 
             validSpawnPoints.Remove(randomSpawnPos);
         }
-
-        daysSinceEnemySpawn = 0;
-
     }
 }

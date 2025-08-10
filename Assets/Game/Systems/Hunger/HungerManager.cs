@@ -47,4 +47,9 @@ public class HungerManager : MonoBehaviour
 
         Events.Health.HungerChanged?.Invoke(currentHunger, startingHunger);
     }
+
+    public int GetCurrentHunger()
+    {
+        return currentHunger;
+    }
 }
