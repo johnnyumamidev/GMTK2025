@@ -45,5 +45,7 @@ public class EnemySpawner : MonoBehaviour
 
             validSpawnPoints.Remove(randomSpawnPos);
         }
+
+        Events.Level.LevelGenerated?.Invoke();
     }
 }

@@ -15,7 +15,10 @@ public class CollisionDetection : MonoBehaviour
         if (other.transform.TryGetComponent(out Enemy enemy))
         {
             if (!enemy.IsAgressive())
+            {
                 enemy.Die();
+                SFXManager.instance.PlayEnemyDieSFX();
+            }
         }
     }
 }

@@ -62,7 +62,10 @@ public class ItemSpawner : MonoBehaviour
             Vector3 worldPos = levelManager.GetWorldTilemap().CellToWorld(randomSpawnPos);
             worldPos += Vector3.one * 0.5f;
 
-            Instantiate(goalItem, worldPos, goalItem.localRotation);
+            Transform part = Instantiate(goalItem, worldPos, goalItem.localRotation);
+            MissingPart missingPart = part.GetComponent<MissingPart>();
+
+            Events.Level.PartSpawned?.Invoke(missingPart);
 
             possibleSpawnPositions.Remove(randomSpawnPos);
         }

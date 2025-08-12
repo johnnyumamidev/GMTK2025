@@ -33,7 +33,9 @@ public class LevelEvents
 {
     public UnityAction GridGenerated;
     public UnityAction<int> MissingPartsGenerated;
+    public UnityAction<MissingPart> PartSpawned;
     public UnityAction<List<Vector3Int>> ItemsGenerated;
+    public UnityAction LevelGenerated;
 
     public UnityAction Undo;
     public UnityAction Reset;

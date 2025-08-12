@@ -29,4 +29,10 @@ public class AttackComponent : MonoBehaviour
             AttackTarget?.Invoke(enemy.transform.position);
         }
     }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+    }
 }

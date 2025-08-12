@@ -29,6 +29,7 @@ public class Enemy : MonoBehaviour
         Events.Level.StartNight += EnableAggression;
         Events.Level.LoopComplete += DisableAggression;
         Events.Level.LoopComplete += MoveAtNight;
+        Events.Level.ReachedNextTile += SnapToTargetPosition;
 
         Events.Level.StartMove += MoveTowardsPlayer;
     }
@@ -37,6 +38,7 @@ public class Enemy : MonoBehaviour
         Events.Level.StartNight -= EnableAggression;
         Events.Level.LoopComplete -= DisableAggression;
         Events.Level.LoopComplete -= MoveAtNight;
+        Events.Level.ReachedNextTile -= SnapToTargetPosition;
 
         Events.Level.StartMove -= MoveTowardsPlayer;
     }
@@ -130,7 +132,10 @@ public class Enemy : MonoBehaviour
             }
         }
     }
-
+    void SnapToTargetPosition(Vector3Int i)
+    {
+        transform.position = targetPosition;
+    }
     void MoveAtNight()
     {
         Vector2 dir = directions[Random.Range(0, 3)];
